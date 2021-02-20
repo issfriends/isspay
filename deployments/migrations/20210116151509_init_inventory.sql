@@ -13,6 +13,9 @@ CREATE TABLE IF NOT EXISTS "products" (
   PRIMARY KEY (id)
 );
 
+
+comment on column products.category is '商品類別 1) snake 2) drink';
+
 CREATE INDEX idx_products_price ON "products" (price);
 CREATE INDEX idx_products_cost ON "products" (cost);
 CREATE INDEX idx_products_category ON "products" (category);
