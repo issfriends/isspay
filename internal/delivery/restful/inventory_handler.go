@@ -8,7 +8,7 @@ import (
 	"github.com/issfriends/isspay/internal/app/query"
 	"github.com/issfriends/isspay/internal/delivery/restful/view"
 	"github.com/issfriends/isspay/internal/delivery/validator"
-	goerr "github.com/issfriends/isspay/internal/test/errors"
+	goerr "github.com/issfriends/isspay/pkg/errors"
 	"github.com/labstack/echo/v4"
 	"github.com/vx416/gox/resperr"
 )
