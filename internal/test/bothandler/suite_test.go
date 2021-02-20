@@ -17,7 +17,7 @@ type botSuite struct {
 	Database *database.Database
 }
 
-func (su *botSuite) Start() error {
+func (su *botSuite) Start(ㄊ) error {
 	var err error
 	if su.TestInstance, err = testutil.New(); err != nil {
 		return nil

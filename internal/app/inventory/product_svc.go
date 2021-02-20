@@ -7,7 +7,7 @@ import (
 	"github.com/vx416/gox/converter"
 	"github.com/vx416/gox/resperr"
 
-	goerr "github.com/issfriends/isspay/internal/test/errors"
+	goerr "github.com/issfriends/isspay/pkg/errors"
 
 	"github.com/issfriends/isspay/internal/app/model"
 	"github.com/issfriends/isspay/internal/app/query"
