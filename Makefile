@@ -17,10 +17,9 @@ migrate.dev.down:
 
 pg:
 	docker run -d --name pg -e POSTGRES_USER=dev \
-						-e PGDATA=/var/lib/postgresql/data/pgdata \
+						-e POSTGRES_DB=isspay_dev \
 						-e POSTGRES_PASSWORD=dev \
 						-p 5432:5432 \
-						-v ${HOME}/var/lib/pgdata:/var/lib/postgresql/data/pgdata \
 						postgres:12.3-alpine
 
 build.image:
