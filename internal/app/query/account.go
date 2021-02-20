@@ -8,3 +8,9 @@ type GetAccountQuery struct {
 	MessengerID string
 	Data        *model.Account
 }
+
+type GetWalletQuery struct {
+	ID          int64
+	AccountID   int64
+	MessengerID string
+}

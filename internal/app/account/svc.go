@@ -6,6 +6,7 @@ type AccountDatabaser interface {
 
 type Servicer interface {
 	AccountServicer
+	// WalletServicer
 }
 
 func New(db AccountDatabaser) Servicer {

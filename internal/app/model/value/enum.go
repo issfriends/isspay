@@ -33,7 +33,7 @@ const (
 	Alumni
 )
 
-type TransactionType int8
+type OrderStatus int8
 
 type ProductCategory int8
 
