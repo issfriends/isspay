@@ -23,5 +23,5 @@ pg:
 						postgres:12.3-alpine
 
 build.image:
-	docker build -f $(CURDIR)/build/docker/analysis.dockerfile -t analysis .
+	docker build -f $(CURDIR)/build/docker/isspay.dockerfile -t isspay .
 
