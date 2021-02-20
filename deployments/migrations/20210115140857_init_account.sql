@@ -15,6 +15,10 @@ CREATE TABLE IF NOT EXISTS "accounts" (
   PRIMARY KEY (id)
 );
 
+comment on column accounts.role is '帳戶平台身份 1) admin 2) manager 3) normal user';
+comment on column accounts.membership is '帳戶學校身份 1) master 2) phd 3) faculty 4) professor 5) alumni';
+
+
 CREATE TABLE IF NOT EXISTS "wallets" (
   id bigserial,
   uid uuid UNIQUE NOT NULL DEFAULT uuid_generate_v4(),
