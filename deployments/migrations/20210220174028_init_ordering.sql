@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS "orders" (
 
 comment on column orders.status is '訂單狀態 1) 未付款 2) 取消 3) 已付款';
 
-CREATE INDEX idx_orders_owner ON "orders" (owner_id);
+CREATE INDEX idx_orders_wallet_id ON "orders" (wallet_id);
 CREATE INDEX idx_orders_paied_at ON "orders" (paied_at);
 
 CREATE TABLE IF NOT EXISTS "ordered_products" (
