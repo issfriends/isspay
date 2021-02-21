@@ -23,7 +23,6 @@ func accountOptions() []*linebot.QuickReplyButton {
 	return []*linebot.QuickReplyButton{
 		linebot.NewQuickReplyButton("", NewPBAction("訂單記錄", ListOrdersCmd.String())),
 		linebot.NewQuickReplyButton("", NewPBAction("查餘額", CheckBalanceCmd.String())),
-		linebot.NewQuickReplyButton("", NewPBAction("付清欠款", PaymentCmd.String())),
 		linebot.NewQuickReplyButton("", NewPBAction("轉帳", TransferCmd.String())),
 	}
 }

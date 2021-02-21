@@ -7,7 +7,7 @@ import (
 
 func GetWalletView(wallet *model.Wallet, replies ...*linebot.QuickReplyButton) linebot.SendingMessage {
 	replies = append(replies, walletOptions(100)...)
-	return QuickRepliesView("", replies...)
+	return QuickRepliesView("hello", replies...)
 }
 
 func walletOptions(amount int64) []*linebot.QuickReplyButton {

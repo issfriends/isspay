@@ -6,6 +6,7 @@ import (
 	"github.com/issfriends/isspay/internal/app/query"
 	"github.com/issfriends/isspay/internal/delivery/bot/view"
 	"github.com/issfriends/isspay/pkg/chatbot"
+	"github.com/shopspring/decimal"
 )
 
 func (h Handler) Account() AccountHandler {
@@ -44,8 +45,20 @@ func (h AccountHandler) SwitchMemberEndpoint(c *chatbot.MsgContext) error {
 }
 
 func (h AccountHandler) PaymentEndpoint(c *chatbot.MsgContext) error {
+	var (
+		ctx = c.Ctx
+	)
+	amount, err := decimal.NewFromString(c.GetValue("amount"))
+	if err != nil {
+		return err
+	}
 
-	return c.ReplyTextf("payment!! balance:0")
+	balance, err := h.svc.Account.MakePaymentByMessagerID(ctx, c.GetMessengerID(), amount)
+	if err != nil {
+		return err
+	}
+
+	return c.ReplyTextf("還款成功，目前錢包餘額 %s", balance.StringFixed(2))
 }
 
 func (h AccountHandler) GetBalanceEndpoint(c *chatbot.MsgContext) error {

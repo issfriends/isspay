@@ -9,7 +9,7 @@ import (
 
 type WalletServicer interface {
 	GetWallet(ctx context.Context, q *query.GetWalletQuery) error
-	MakePayment(ctx context.Context, walletID int64, amount decimal.Decimal) (walletBalance decimal.Decimal, err error)
+	MakePaymentByMessagerID(ctx context.Context, msgID string, amount decimal.Decimal) (walletBalance decimal.Decimal, err error)
 }
 
 func (svc service) GetWallet(ctx context.Context, q *query.GetWalletQuery) error {
@@ -17,7 +17,7 @@ func (svc service) GetWallet(ctx context.Context, q *query.GetWalletQuery) error
 	return nil
 }
 
-func (svc service) MakePayment(ctx context.Context, walletID int64, amount decimal.Decimal) (decimal.Decimal, error) {
+func (svc service) MakePaymentByMessagerID(ctx context.Context, msgID string, amount decimal.Decimal) (decimal.Decimal, error) {
 	// 靠你了鄭言竹
 	return decimal.Zero, nil
 }
