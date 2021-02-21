@@ -1,0 +1,22 @@
+app:
+  name: isspay
+  env: dev
+db:
+  host: localhost
+  port: 5432
+  user: dev
+  password: dev
+  dbname: isspay_dev
+  type: postgres
+  # maxidleconns: 
+  # maxopenconns:
+  # maxidletimesec:
+  # maxlifetimesec:
+log:
+  env: dev
+  type: zap
+  app_name: isspay
+  level: debug
+http_server:
+  host: localhost
+  port: 8080

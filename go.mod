@@ -3,7 +3,7 @@ module github.com/issfriends/isspay
 go 1.15
 
 require (
-	github.com/99designs/gqlgen v0.13.0
+	github.com/99designs/gqlgen v0.13.0 // indirect
 	github.com/Azure/go-ansiterm v0.0.0-20170929234023-d6e3b3328b78 // indirect
 	github.com/ClickHouse/clickhouse-go v1.4.3 // indirect
 	github.com/Microsoft/go-winio v0.4.16 // indirect
@@ -18,11 +18,13 @@ require (
 	github.com/go-redis/redis/v8 v8.4.8 // indirect
 	github.com/google/go-cmp v0.5.4 // indirect
 	github.com/google/uuid v1.1.2
+	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/labstack/echo v3.3.10+incompatible // indirect
 	github.com/labstack/echo/v4 v4.1.17
 	github.com/labstack/gommon v0.3.0 // indirect
 	github.com/line/line-bot-sdk-go v7.7.0+incompatible
 	github.com/mattn/go-sqlite3 v1.14.6 // indirect
+	github.com/mitchellh/mapstructure v1.4.0
 	github.com/opencontainers/image-spec v1.0.1 // indirect
 	github.com/opencontainers/runc v0.1.1 // indirect
 	github.com/ory/dockertest v3.3.5+incompatible // indirect
@@ -31,6 +33,8 @@ require (
 	github.com/rs/zerolog v1.20.0 // indirect
 	github.com/shopspring/decimal v1.2.0
 	github.com/sirupsen/logrus v1.7.0 // indirect
+	github.com/spf13/cobra v0.0.2-0.20171109065643-2da4a54c5cee
+	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.6.1
 	github.com/thedevsaddam/govalidator v1.9.10
 	github.com/vx416/gogo-factory v0.1.7

@@ -1,1 +1,66 @@
 package cmd
+
+import (
+	"os"
+
+	"github.com/issfriends/isspay/internal/app"
+	"github.com/issfriends/isspay/internal/delivery/bot"
+	"github.com/issfriends/isspay/internal/delivery/restful"
+	"github.com/issfriends/isspay/internal/repository/database"
+	"github.com/issfriends/isspay/pkg/config"
+	"github.com/spf13/cobra"
+	"github.com/vx416/gox/log"
+	"go.uber.org/fx"
+)
+
+var (
+	// Server run iss pay server command
+	Server = &cobra.Command{
+		Use:   "server",
+		Short: "run isspay http api server",
+		Run:   runServer,
+	}
+	migration bool
+)
+
+func init() {
+	Server.Flags().BoolVarP(&migration, "migration", "m", false, "run migration")
+}
+
+func runServer(cmd *cobra.Command, args []string) {
+	defer recoverPanic()
+
+	cfg, err := config.Init()
+	if err != nil {
+		log.Get().Errorf("server: init config failed, err:%+v", err)
+		os.Exit(1)
+	}
+
+	if _, err = cfg.Log.Build(); err != nil {
+		log.Get().Errorf("server: init logger failed, err:%+v", err)
+		os.Exit(1)
+	}
+
+	opts := fx.Options(
+		fx.Supply(*cfg),
+		cfg.ProvideDB(),
+		fx.Provide(
+			database.New,
+			app.New,
+			restful.New,
+			bot.New,
+		),
+		cfg.InvokeServer(),
+	)
+
+	if migration {
+		opts = fx.Options(
+			opts,
+			fx.Invoke(runMigrations),
+		)
+	}
+
+	app := fx.New(opts)
+
+	runApp(app)
+}

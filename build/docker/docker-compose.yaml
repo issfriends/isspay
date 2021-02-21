@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  isspay:
+    image: issfriend/isspay
+    user: appuser
+    depends_on: 
+      - db
+    ports:
+      - 8080:8080
+    volumes:
+      - ../../configs/app-docker.yaml:/isspay/configs/app.yaml
+      - ../../deployments/migrations/:/isspay/deployments/migrations/
+    command: ["server", "-m"]
+    env_file:
+      - ./.docker.env
+  db:
+    image: postgres:12.3-alpine
+    environment:
+      - POSTGRES_USER=dev
+      - POSTGRES_PASSWORD=dev
+      - POSTGRES_DB=isspay_dev
+    ports:
+      - 25432:5432

@@ -1,15 +1,17 @@
-FROM golang:latest AS builder
+FROM golang:1.15 AS builder
 WORKDIR /isspay
 ENV GO111MODULE=on 
 
+RUN apt-get update -y && apt-get install -y upx
 COPY . .
-
 RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build  -mod=vendor -o main
+
+RUN strip ./main
+RUN upx -q -9 ./main
 
 FROM alpine:latest
 ARG BUILD_TIME
 ARG SHA1_VER
-
 
 RUN apk update && \
     apk upgrade && \
@@ -28,4 +30,5 @@ RUN addgroup -g 1000 appuser && \
     chown -R appuser:appuser /isspay
 USER isspay
 
-CMD ["./main", "isspay"]
+ENTRYPOINT [ "./main" ]
+CMD ["isspay"]

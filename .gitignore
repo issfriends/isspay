@@ -1,1 +1,6 @@
 .idea/
+/configs/app.yaml
+/configs/secrets.yaml
+/vendor
+/main
+/build/docker/.docker.env
