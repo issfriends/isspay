@@ -21,10 +21,12 @@ var (
 		Run:   runServer,
 	}
 	migration bool
+	testData  bool
 )
 
 func init() {
 	Server.Flags().BoolVarP(&migration, "migration", "m", false, "run migration")
+	Server.Flags().BoolVarP(&testData, "testdata", "td", false, "create test data")
 }
 
 func runServer(cmd *cobra.Command, args []string) {
@@ -57,6 +59,13 @@ func runServer(cmd *cobra.Command, args []string) {
 		opts = fx.Options(
 			opts,
 			fx.Invoke(runMigrations),
+		)
+	}
+
+	if testData {
+		opts = fx.Options(
+			opts,
+			fx.Invoke(initTestData),
 		)
 	}
 

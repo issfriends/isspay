@@ -10,7 +10,9 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/issfriends/isspay/pkg/factory"
 	"github.com/pressly/goose"
+	gofactory "github.com/vx416/gogo-factory"
 	"github.com/vx416/gox/dbprovider"
 	"github.com/vx416/gox/log"
 	"go.uber.org/fx"
@@ -62,4 +64,17 @@ func runMigrations(db dbprovider.GormProvider) error {
 	dir := filepath.Dir(f)
 	migrationPath := filepath.Join(dir, "../deployments/migrations")
 	return goose.Up(sqlDB, migrationPath)
+}
+
+func initTestData(db dbprovider.GormProvider) error {
+	sqlDB, err := db.DB()
+	if err != nil {
+		return err
+	}
+
+	gofactory.Opt().SetDB(sqlDB, "postgres")
+	gofactory.Opt().SetTagProcess(gofactory.GormTagProcess)
+
+	_, err = factory.Product.InsertN(100)
+	return err
 }
