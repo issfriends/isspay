@@ -5,7 +5,7 @@ import (
 	"github.com/vx416/gox/dbprovider"
 )
 
-var _ inventory.InventoryDatabaser = (*InventoryDB)(nil)
+var _ inventory.Databaser = (*InventoryDB)(nil)
 
 type InventoryDB struct {
 	dbprovider.GormProvider
