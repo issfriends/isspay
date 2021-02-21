@@ -2,7 +2,6 @@ package httphandler
 
 import (
 	"net/http"
-	"strconv"
 	"testing"
 
 	"github.com/issfriends/isspay/internal/app/model"
@@ -85,7 +84,7 @@ func (s *inventorySuite) TestBatchCreateProducts() {
 
 			s.Require().NoError(err)
 			s.Len(q.Data, len(valid))
-			testutil.AssertProductsEq(s.Suite, q.Data, valid, true)
+			s.AssertHelper.AssertProductsEq(q.Data, valid, true)
 		})
 	}
 }
@@ -116,7 +115,7 @@ func (s *inventorySuite) TestUpdateProduct() {
 		s.SetupTest()
 		s.Run(tc.name, func() {
 			old, updatedProduct := tc.updateTo()
-			req, resp := testutil.BuildRequest("PUT", "/api/v1/products/"+strconv.Itoa(int(old.ID)), updatedProduct)
+			req, resp := testutil.BuildRequest("PUT", "/api/v1/products/"+old.UID, updatedProduct)
 			s.Serv.ServeHTTP(resp, req)
 			res := resp.Result()
 			q := query.GetProductQuery{
@@ -162,7 +161,7 @@ func (s *inventorySuite) TestListProducts() {
 			s.Serv.ServeHTTP(resp, req)
 			err := testutil.GetResponseData(resp, actual)
 			s.Require().NoError(err)
-			testutil.AssertProductsEq(s.Suite, actual["data"], expected, true)
+			s.AssertHelper.AssertProductsEq(actual["data"], expected, true)
 		})
 	}
 }
