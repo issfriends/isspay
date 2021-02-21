@@ -1,6 +1,8 @@
 package query
 
-import "github.com/issfriends/isspay/internal/app/model"
+import (
+	"github.com/issfriends/isspay/internal/app/model"
+)
 
 type GetAccountQuery struct {
 	Email       string

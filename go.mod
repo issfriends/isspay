@@ -6,6 +6,7 @@ require (
 	github.com/Azure/go-ansiterm v0.0.0-20170929234023-d6e3b3328b78 // indirect
 	github.com/Microsoft/go-winio v0.4.16 // indirect
 	github.com/Pallinder/go-randomdata v1.2.0
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/google/uuid v1.1.2
 	github.com/gotestyourself/gotestyourself v2.2.0+incompatible // indirect
 	github.com/kelseyhightower/envconfig v1.4.0
