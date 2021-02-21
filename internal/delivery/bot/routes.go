@@ -9,16 +9,19 @@ import (
 	"github.com/issfriends/isspay/pkg/chatbot"
 )
 
+// New new a chatbot handler
 func New(svc *app.Service) *Handler {
 	return &Handler{
 		svc: svc,
 	}
 }
 
+// Handler chatbot handler
 type Handler struct {
 	svc *app.Service
 }
 
+// Routes set chatbot routes
 func (h *Handler) Routes(bot chatbot.ChatBot) error {
 	if err := bot.SetMenu(view.DefaultMenu, assets("linebot_menu_v1")); err != nil {
 		return err
