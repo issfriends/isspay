@@ -11,11 +11,12 @@ func New(db *database.Database) *Service {
 	return &Service{
 		Account:   account.New(db.Account()),
 		Inventory: inventory.New(db.Inventory()),
+		Ordering:  ordering.New(),
 	}
 }
 
 type Service struct {
 	Account   account.Servicer
 	Inventory inventory.Servicer
-	Order     ordering.Servicer
+	Ordering  ordering.Servicer
 }

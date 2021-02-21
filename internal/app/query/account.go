@@ -13,4 +13,6 @@ type GetWalletQuery struct {
 	ID          int64
 	AccountID   int64
 	MessengerID string
+
+	Data *model.Wallet
 }

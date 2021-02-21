@@ -1,20 +1,11 @@
 package model
 
 type Order struct {
+	UID             string `gorm:"column:uid" json:"uid"`
 	OrderedProducts []*OrderedProduct
-	Name            string
 }
-
-func (o Order) GetName() string {
-	return o.Name
-}
-
-func (o *Order) UpdateName(n string) {
-	o.Name = n
-}
-
-var o1 = Order{}
-var o2 = &Order{}
 
 type OrderedProduct struct {
+	ProductID int64 `json:"productID"`
+	Quantity  int64 `json:"quantity"`
 }
