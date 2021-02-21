@@ -1,11 +1,11 @@
 package account
 
 import (
-	"github.com/issfriends/isspay/internal/app/account"
+	"github.com/issfriends/isspay/internal/app/query"
 	"gorm.io/gorm"
 )
 
-func GetAccountScope(q *account.GetAccountQuery) func(db *gorm.DB) *gorm.DB {
+func GetAccountScope(q *query.GetAccountQuery) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		if q.MessengerID != "" {
 			db = db.Where("messenger_id = ?", q.MessengerID)

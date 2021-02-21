@@ -6,11 +6,12 @@ import (
 	"github.com/google/uuid"
 	"github.com/issfriends/isspay/internal/app/model"
 	"github.com/issfriends/isspay/internal/app/model/value"
+	"github.com/issfriends/isspay/internal/app/query"
 )
 
 type IdentityDatabaser interface {
 	CreateAccount(ctx context.Context, account *model.Account) error
-	GetAccount(ctx context.Context, q *GetAccountQuery) error
+	GetAccount(ctx context.Context, q *query.GetAccountQuery) error
 	ExecuteTx(ctx context.Context, callback func(ctx context.Context) error) error
 }
 

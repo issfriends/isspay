@@ -6,20 +6,22 @@ import (
 	"github.com/shopspring/decimal"
 	"github.com/vx416/gox/converter"
 
-	"github.com/issfriends/isspay/internal/app/account"
 	"github.com/issfriends/isspay/internal/app/model"
+	"github.com/issfriends/isspay/internal/app/query"
 
 	"github.com/issfriends/isspay/internal/repository/database"
 	"github.com/stretchr/testify/suite"
 )
 
+// Assertion common assertion helper
 type Assertion struct {
 	suite.Suite
 	Ctx      context.Context
 	Database *database.Database
 }
 
-func (su *Assertion) AssertAccountExist(q *account.GetAccountQuery, exist, hasWallet bool) *model.Account {
+// AssertAccountExist assertion account exists
+func (su *Assertion) AssertAccountExist(q *query.GetAccountQuery, exist, hasWallet bool) *model.Account {
 	err := su.Database.Account().GetAccount(su.Ctx, q)
 	if exist {
 		su.Require().NoError(err)
@@ -36,7 +38,7 @@ func (su *Assertion) AssertAccountExist(q *account.GetAccountQuery, exist, hasWa
 			su.Require().NotNil(q.Data.Wallet)
 			su.Assert().Equal(q.Data.Wallet.OwnerID, q.Data.ID)
 			su.Assert().NotZero(q.Data.Wallet.ID)
-			su.Assert().GreaterOrEqual(q.Data.Wallet.Amount, decimal.Zero)
+			su.Assert().True(q.Data.Wallet.Amount.GreaterThanOrEqual(decimal.Zero))
 		}
 
 		return q.Data
@@ -47,7 +49,8 @@ func (su *Assertion) AssertAccountExist(q *account.GetAccountQuery, exist, hasWa
 	return nil
 }
 
-func AssertProductsEq(su suite.Suite, a, b []*model.Product, eq bool) {
+// AssertProductsEq assert products is equal
+func (su *Assertion) AssertProductsEq(a, b []*model.Product, eq bool) {
 	productsMap := converter.SliceToMap(a, "Name").(map[string]*model.Product)
 	result := true
 

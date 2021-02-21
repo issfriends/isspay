@@ -6,10 +6,9 @@ import (
 	"github.com/issfriends/isspay/pkg/factory"
 	"github.com/shopspring/decimal"
 
-	"github.com/issfriends/isspay/internal/app/inventory"
 	"github.com/issfriends/isspay/internal/app/model"
 	"github.com/issfriends/isspay/internal/app/model/value"
-	"github.com/issfriends/isspay/internal/test/testutil"
+	"github.com/issfriends/isspay/internal/app/query"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -20,29 +19,21 @@ func TestInventoryDB(t *testing.T) {
 type InventorySuite struct {
 	suite.Suite
 	*dbSuite
-	assert *testutil.Assertion
 }
 
 func (su *InventorySuite) SetupSuite() {
 	su.dbSuite = &dbSuite{}
-	err := su.Start()
-	su.Require().NoError(err)
-	su.assert = &testutil.Assertion{
-		Suite:    su.Suite,
-		Database: su.Database,
-		Ctx:      su.Ctx,
-	}
+	su.Require().NoError(su.Start())
+	su.SetupAssertion(su.Suite)
 }
 
 func (su *InventorySuite) SetupTest() {
-	// err := dbprovider.Truncate(su.DB,
-	// 	"products",
-	// )
-	// su.Require().NoError(err)
+	err := su.TruncateTables("products")
+	su.Require().NoError(err)
 }
 
 func (su *InventorySuite) TearDownSuite() {
-	err := su.Finish(false)
+	err := su.Shutdown(false)
 	su.Require().NoError(err)
 }
 
@@ -50,7 +41,7 @@ func (su *InventorySuite) TestListProducts() {
 	tcs := []struct {
 		name  string
 		setup func() []*model.Product
-		q     *inventory.ListProductsQuery
+		q     *query.ListProductsQuery
 	}{
 		{
 			"snake",
@@ -58,7 +49,7 @@ func (su *InventorySuite) TestListProducts() {
 				factory.Product.Category(value.Drink).MustInsertN(5)
 				return factory.Product.Category(value.Snake).MustInsertN(5).([]*model.Product)
 			},
-			&inventory.ListProductsQuery{
+			&query.ListProductsQuery{
 				Category: value.Snake,
 			},
 		},
@@ -68,7 +59,7 @@ func (su *InventorySuite) TestListProducts() {
 				factory.Product.Category(value.Snake).MustInsertN(5)
 				return factory.Product.Category(value.Drink).MustInsertN(5).([]*model.Product)
 			},
-			&inventory.ListProductsQuery{
+			&query.ListProductsQuery{
 				Category: value.Drink,
 			},
 		},
@@ -78,7 +69,7 @@ func (su *InventorySuite) TestListProducts() {
 				factory.Product.Price(5).MustInsertN(5)
 				return factory.Product.Price(10).MustInsertN(5).([]*model.Product)
 			},
-			&inventory.ListProductsQuery{
+			&query.ListProductsQuery{
 				PriceGte: decimal.NewFromInt(10),
 			},
 		},
@@ -88,7 +79,7 @@ func (su *InventorySuite) TestListProducts() {
 				factory.Product.Quantity(0).MustInsertN(5)
 				return factory.Product.Quantity(10).MustInsertN(6).([]*model.Product)
 			},
-			&inventory.ListProductsQuery{
+			&query.ListProductsQuery{
 				QuantityGte: 1,
 			},
 		},
@@ -98,11 +89,11 @@ func (su *InventorySuite) TestListProducts() {
 		su.Run(tc.name, func() {
 			su.SetupTest()
 			products := tc.setup()
-			err := su.Database.Inventory().ListProducts(su.Ctx, tc.q)
+			_, err := su.Database.Inventory().ListProducts(su.Ctx, tc.q)
 			su.Require().NoError(err)
 			su.Require().NotNil(tc.q.Data)
 			su.Require().Len(tc.q.Data, len(products))
-			testutil.AssertProductsEq(su.Suite, tc.q.Data, products, true)
+			su.AssertHelper.AssertProductsEq(tc.q.Data, products, true)
 		})
 
 	}

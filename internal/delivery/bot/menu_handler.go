@@ -2,7 +2,7 @@ package bot
 
 import (
 	"github.com/issfriends/isspay/internal/delivery/bot/view"
-	"github.com/issfriends/isspay/internal/pkg/chatbot"
+	"github.com/issfriends/isspay/pkg/chatbot"
 	"github.com/line/line-bot-sdk-go/linebot"
 )
 

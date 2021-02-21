@@ -3,7 +3,7 @@ package bot
 import (
 	"github.com/issfriends/isspay/internal/app"
 	"github.com/issfriends/isspay/internal/app/model"
-	"github.com/issfriends/isspay/internal/pkg/chatbot"
+	"github.com/issfriends/isspay/pkg/chatbot"
 )
 
 func (h Handler) Account() AccountHandler {

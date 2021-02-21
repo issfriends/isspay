@@ -3,7 +3,7 @@ package view
 import (
 	"time"
 
-	"github.com/issfriends/isspay/internal/pkg/chatbot"
+	"github.com/issfriends/isspay/pkg/chatbot"
 	"github.com/line/line-bot-sdk-go/linebot"
 )
 

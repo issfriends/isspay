@@ -3,7 +3,7 @@ package bot
 import (
 	"github.com/issfriends/isspay/internal/app"
 	"github.com/issfriends/isspay/internal/delivery/bot/view"
-	"github.com/issfriends/isspay/internal/pkg/chatbot"
+	"github.com/issfriends/isspay/pkg/chatbot"
 )
 
 func New(svc *app.Service) *Handler {
@@ -16,7 +16,7 @@ type Handler struct {
 	svc *app.Service
 }
 
-func Routes(bot chatbot.ChatBot, h *Handler) {
+func (h *Handler) Routes(bot chatbot.ChatBot) {
 	bot.SetCommand(view.MenuCmd, h.Menu().MenuEndpoint)
 
 	bot.SetCommand(view.ListProductsCmd, h.Ordering().ListProductsEndpoint)

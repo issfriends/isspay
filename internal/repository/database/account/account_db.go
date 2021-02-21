@@ -5,6 +5,7 @@ import (
 
 	"github.com/issfriends/isspay/internal/app/account"
 	"github.com/issfriends/isspay/internal/app/model"
+	"github.com/issfriends/isspay/internal/app/query"
 	"github.com/vx416/gox/dbprovider"
 )
 
@@ -23,7 +24,7 @@ func (d *AccountDB) CreateAccount(ctx context.Context, account *model.Account) e
 	return nil
 }
 
-func (d *AccountDB) GetAccount(ctx context.Context, q *account.GetAccountQuery) error {
+func (d *AccountDB) GetAccount(ctx context.Context, q *query.GetAccountQuery) error {
 	data := &model.Account{}
 	db := d.GetDB(ctx)
 

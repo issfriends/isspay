@@ -4,10 +4,9 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/issfriends/isspay/internal/app/account"
 	"github.com/issfriends/isspay/internal/app/model"
+	"github.com/issfriends/isspay/internal/app/query"
 	accDB "github.com/issfriends/isspay/internal/repository/database/account"
-	"github.com/issfriends/isspay/internal/test/testutil"
 
 	"github.com/issfriends/isspay/pkg/factory"
 	"github.com/stretchr/testify/suite"
@@ -21,7 +20,6 @@ type AccountSuite struct {
 	suite.Suite
 	*dbSuite
 	accountDB *accDB.AccountDB
-	assert    *testutil.Assertion
 }
 
 func (su *AccountSuite) SetupSuite() {
@@ -29,22 +27,16 @@ func (su *AccountSuite) SetupSuite() {
 	err := su.Start()
 	su.Require().NoError(err)
 	su.accountDB = su.Database.Account()
-	su.assert = &testutil.Assertion{
-		Suite:    su.Suite,
-		Database: su.Database,
-		Ctx:      su.Ctx,
-	}
+	su.SetupAssertion(su.Suite)
 }
 
 func (su *AccountSuite) SetupTest() {
-	// err := dbprovider.Truncate(su.DB,
-	// 	"accounts", "wallets",
-	// )
-	// su.Require().NoError(err)
+	err := su.TruncateTables("accounts", "wallets")
+	su.Require().NoError(err)
 }
 
 func (su *AccountSuite) TearDownSuite() {
-	err := su.Finish(false)
+	err := su.Shutdown(false)
 	su.Require().NoError(err)
 }
 
@@ -80,17 +72,17 @@ func (su *AccountSuite) TestCreateAccount() {
 	for _, tc := range tcs {
 		su.Run(tc.name, func() {
 			err := su.accountDB.CreateAccount(su.Ctx, tc.acc)
-			q := &account.GetAccountQuery{
+			q := &query.GetAccountQuery{
 				ID: tc.acc.ID,
 			}
 
 			if tc.succ {
 				su.Require().NoError(err)
-				foundAcc := su.assert.AssertAccountExist(q, tc.exist, false)
+				foundAcc := su.AssertHelper.AssertAccountExist(q, tc.exist, false)
 				su.Assert().True(reflect.DeepEqual(tc.acc, foundAcc))
 			} else {
 				su.Require().Error(err)
-				su.assert.AssertAccountExist(q, tc.exist, false)
+				su.AssertHelper.AssertAccountExist(q, tc.exist, false)
 			}
 		})
 
@@ -103,33 +95,33 @@ func (su *AccountSuite) TestGetAccount() {
 
 	tcs := []struct {
 		name   string
-		q      *account.GetAccountQuery
+		q      *query.GetAccountQuery
 		expect *model.Account
 	}{
 		{
 			"getByEmail",
-			&account.GetAccountQuery{
+			&query.GetAccountQuery{
 				Email: accounts[0].Email,
 			},
 			accounts[0],
 		},
 		{
 			"getByMsgID",
-			&account.GetAccountQuery{
+			&query.GetAccountQuery{
 				MessengerID: accounts[1].MessengerID.String,
 			},
 			accounts[1],
 		},
 		{
 			"getByID",
-			&account.GetAccountQuery{
+			&query.GetAccountQuery{
 				ID: accounts[1].ID,
 			},
 			accounts[1],
 		},
 		{
 			"getByEmailAndMsgID",
-			&account.GetAccountQuery{
+			&query.GetAccountQuery{
 				MessengerID: accounts[1].MessengerID.String,
 				Email:       accounts[1].Email,
 			},
@@ -137,7 +129,7 @@ func (su *AccountSuite) TestGetAccount() {
 		},
 		{
 			"getNothing",
-			&account.GetAccountQuery{
+			&query.GetAccountQuery{
 				MessengerID: accounts[1].MessengerID.String,
 				Email:       accounts[0].Email,
 			},

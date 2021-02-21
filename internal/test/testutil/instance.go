@@ -4,28 +4,21 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
-	"os"
-	"path/filepath"
-	"runtime"
-	"time"
-
-	"gorm.io/gorm/logger"
 
 	"github.com/issfriends/isspay/internal/app"
 	"github.com/issfriends/isspay/internal/delivery/bot"
 	"github.com/issfriends/isspay/internal/delivery/restful"
 	"github.com/issfriends/isspay/internal/repository/database"
+	"github.com/issfriends/isspay/pkg/chatbot"
 	"github.com/labstack/echo/v4"
-	"github.com/pressly/goose"
-	gofactory "github.com/vx416/gogo-factory"
+	"github.com/stretchr/testify/suite"
 	"github.com/vx416/gox/container"
 	"github.com/vx416/gox/dbprovider"
-	"gorm.io/gorm"
 
 	"go.uber.org/fx"
 )
 
+// New new test application instance
 func New() (*TestInstance, error) {
 	c, err := container.NewConBuilder()
 	if err != nil {
@@ -37,6 +30,7 @@ func New() (*TestInstance, error) {
 	}, nil
 }
 
+// TestInstance test application instance
 type TestInstance struct {
 	*container.Builder
 	Ctx      context.Context
@@ -44,89 +38,25 @@ type TestInstance struct {
 	Database *database.Database
 	Svc      *app.Service
 	Serv     *echo.Echo
+	Bot      chatbot.ChatBot
 	App      *fx.App
+
+	AssertHelper *Assertion
 }
 
-// func (ti *TestInstance) BuildRedis() (*redis.Client, error) {
-// 	return ti.RunRedis("isspay_redis")
-// }
-
-func (ti *TestInstance) TruncateTables(tables ...string) error {
-	if ti.DB == nil {
-		return errors.New("db is nil")
-	}
-
-	sqlDB, err := ti.DB.DB()
-	if err != nil {
-		return err
-	}
-
-	for _, table := range tables {
-		_, err := sqlDB.Exec(fmt.Sprintf("TRUNCATE %s CASCADE;", table))
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func (ti *TestInstance) KillAll() error {
-	return ti.PruneAll()
-}
-
-func (ti *TestInstance) BuildGorm() (dbprovider.GormProvider, error) {
-	pgCfg, err := ti.RunPg("isspay_test", "isspay_test", "15432")
-	if err != nil {
-		return nil, err
-	}
-	dbCfg := &dbprovider.DBConfig{
-		Host:     pgCfg.Host,
-		Port:     pgCfg.Port,
-		User:     pgCfg.Username,
-		Password: pgCfg.Password,
-		DBName:   pgCfg.DBName,
-		Type:     dbprovider.Pg,
-	}
-
-	gormConfig := &gorm.Config{
-		Logger: logger.New(log.New(os.Stdout, "\r\n", log.LstdFlags), logger.Config{
-			SlowThreshold: 200 * time.Millisecond,
-			LogLevel:      logger.Info,
-			Colorful:      true,
-		}),
-	}
-
-	db, err := dbprovider.NewGorm(dbCfg, gormConfig)
-	if err != nil {
-		return nil, err
-	}
-	return db, nil
-}
-
-func (ti *TestInstance) RunMigration(db dbprovider.GormProvider) error {
-	sqlDB, err := db.DB()
-	if err != nil {
-		return err
-	}
-
-	_, f, _, _ := runtime.Caller(0)
-	dir := filepath.Dir(f)
-	migrationPath := filepath.Join(dir, "../../../deployments/migrations")
-
-	return goose.Up(sqlDB, migrationPath)
-}
-
+// ProvideDB provide db layer fx options
 func (ti *TestInstance) ProvideDB() fx.Option {
 	return fx.Options(
 		fx.Provide(
-			ti.BuildGorm,
+			ti.buildGorm,
 			database.New,
 		),
-		fx.Invoke(ti.RunMigration, ti.SetupFactory),
+		fx.Invoke(ti.setupMigration, ti.setupFactory, ti.setupLog),
 		fx.Populate(&ti.DB, &ti.Database),
 	)
 }
 
+// ProvideSvc provide service layer fx options
 func (ti *TestInstance) ProvideSvc() fx.Option {
 	return fx.Options(
 		ti.ProvideDB(),
@@ -137,6 +67,7 @@ func (ti *TestInstance) ProvideSvc() fx.Option {
 	)
 }
 
+// ProvideRestfulHandler provide restful layer fx options
 func (ti *TestInstance) ProvideRestfulHandler() fx.Option {
 	return fx.Options(
 		ti.ProvideSvc(),
@@ -144,30 +75,29 @@ func (ti *TestInstance) ProvideRestfulHandler() fx.Option {
 			echo.New,
 			restful.New,
 		),
-		fx.Invoke(restful.Routes),
+		fx.Invoke(func(h *restful.Handler, e *echo.Echo) {
+			h.Routes(e)
+		}),
 		fx.Populate(&ti.Serv),
 	)
 }
 
+// ProvideBotHandler provide bothandler layer fx options
 func (ti *TestInstance) ProvideBotHandler() fx.Option {
 	return fx.Options(
 		ti.ProvideSvc(),
 		fx.Provide(
+			chatbot.TestBot,
 			bot.New,
 		),
+		fx.Invoke(func(h *bot.Handler, chatbot chatbot.ChatBot) {
+			h.Routes(chatbot)
+		}),
+		fx.Populate(&ti.Bot),
 	)
 }
 
-func (ti *TestInstance) SetupFactory(db dbprovider.GormProvider) error {
-	sqlDB, err := db.DB()
-	if err != nil {
-		return err
-	}
-	gofactory.Opt().SetDB(sqlDB, "postgres")
-	gofactory.Opt().SetTagProcess(gofactory.GormTagProcess)
-	return nil
-}
-
+// Start start test application
 func (ti *TestInstance) Start(option fx.Option) error {
 	app := fx.New(
 		option,
@@ -182,13 +112,43 @@ func (ti *TestInstance) Start(option fx.Option) error {
 	return nil
 }
 
-func (ti *TestInstance) Finish(kill bool) error {
+// SetupAssertion setup assertion helper
+func (ti *TestInstance) SetupAssertion(s suite.Suite) {
+	ti.AssertHelper = &Assertion{
+		Suite:    s,
+		Database: ti.Database,
+		Ctx:      ti.Ctx,
+	}
+}
+
+// Shutdown shutdown test application
+func (ti *TestInstance) Shutdown(kill bool) error {
 	err := ti.App.Stop(ti.Ctx)
 	if err != nil {
 		return err
 	}
 	if kill {
-		if err := ti.KillAll(); err != nil {
+		if err := ti.killAll(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// TruncateTables delete tables
+func (ti *TestInstance) TruncateTables(tables ...string) error {
+	if ti.DB == nil {
+		return errors.New("db is nil")
+	}
+
+	sqlDB, err := ti.DB.DB()
+	if err != nil {
+		return err
+	}
+
+	for _, table := range tables {
+		_, err := sqlDB.Exec(fmt.Sprintf("TRUNCATE %s CASCADE;", table))
+		if err != nil {
 			return err
 		}
 	}

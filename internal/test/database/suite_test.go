@@ -3,14 +3,12 @@ package database
 import (
 	"fmt"
 
-	"github.com/issfriends/isspay/internal/repository/database"
 	"github.com/issfriends/isspay/internal/test/testutil"
 	"go.uber.org/fx"
 )
 
 type dbSuite struct {
 	*testutil.TestInstance
-	*database.Database
 }
 
 func (su *dbSuite) Start() error {
@@ -23,7 +21,6 @@ func (su *dbSuite) Start() error {
 
 	err = su.TestInstance.Start(fx.Options(
 		su.ProvideDB(),
-		fx.Populate(&su.Database),
 	))
 	if err != nil {
 		return err

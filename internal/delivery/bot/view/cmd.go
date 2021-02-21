@@ -1,7 +1,7 @@
 package view
 
 import (
-	"github.com/issfriends/isspay/internal/pkg/chatbot"
+	"github.com/issfriends/isspay/pkg/chatbot"
 )
 
 const (
