@@ -3,6 +3,8 @@ package bot
 import (
 	"github.com/issfriends/isspay/internal/app"
 	"github.com/issfriends/isspay/internal/app/model"
+	"github.com/issfriends/isspay/internal/app/query"
+	"github.com/issfriends/isspay/internal/delivery/bot/view"
 	"github.com/issfriends/isspay/pkg/chatbot"
 )
 
@@ -33,19 +35,31 @@ func (h AccountHandler) SignUpEndpoint(c *chatbot.MsgContext) error {
 		return err
 	}
 
-	return c.PushTextf("welcome %s", account.NickName)
+	return c.ReplyTextf("welcome %s", account.NickName)
 }
 
 func (h AccountHandler) SwitchMemberEndpoint(c *chatbot.MsgContext) error {
 	email := c.GetValue("membership")
-	return c.PushTextf("welcome %s", email)
+	return c.ReplyTextf("welcome %s", email)
 }
 
 func (h AccountHandler) PaymentEndpoint(c *chatbot.MsgContext) error {
-	return c.PushTextf("payment!! balance:0")
+
+	return c.ReplyTextf("payment!! balance:0")
 }
 
 func (h AccountHandler) GetBalanceEndpoint(c *chatbot.MsgContext) error {
+	var (
+		q = &query.GetWalletQuery{
+			MessengerID: c.GetMessengerID(),
+		}
+		ctx = c.Ctx
+	)
 
-	return c.PushTextf("payment!! balance:-100")
+	if err := h.svc.Account.GetWallet(ctx, q); err != nil {
+		return err
+	}
+
+	msg := view.GetWalletView(q.Data)
+	return c.ReplyMsg(msg)
 }

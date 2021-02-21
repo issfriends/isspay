@@ -10,7 +10,7 @@ func NewPBAction(label, data string) *linebot.PostbackAction {
 	}
 }
 
-func quickRepliesView(title string, replies ...*linebot.QuickReplyButton) linebot.SendingMessage {
+func QuickRepliesView(title string, replies ...*linebot.QuickReplyButton) linebot.SendingMessage {
 	items := linebot.NewQuickReplyItems(
 		replies...,
 	)

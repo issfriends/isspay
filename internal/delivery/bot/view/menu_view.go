@@ -4,7 +4,7 @@ import "github.com/line/line-bot-sdk-go/linebot"
 
 func ShopMenuView(title string, replies ...*linebot.QuickReplyButton) linebot.SendingMessage {
 	replies = append(replies, shopOptions()...)
-	return quickRepliesView(title, replies...)
+	return QuickRepliesView(title, replies...)
 }
 
 func shopOptions() []*linebot.QuickReplyButton {
@@ -16,7 +16,7 @@ func shopOptions() []*linebot.QuickReplyButton {
 
 func AccountMenuView(title string, replies ...*linebot.QuickReplyButton) linebot.SendingMessage {
 	replies = append(replies, accountOptions()...)
-	return quickRepliesView(title, replies...)
+	return QuickRepliesView(title, replies...)
 }
 
 func accountOptions() []*linebot.QuickReplyButton {
@@ -30,7 +30,7 @@ func accountOptions() []*linebot.QuickReplyButton {
 
 func FunctionMenuView(title string, replies ...*linebot.QuickReplyButton) linebot.SendingMessage {
 	replies = append(replies, functionOptions()...)
-	return quickRepliesView(title, replies...)
+	return QuickRepliesView(title, replies...)
 }
 
 func functionOptions() []*linebot.QuickReplyButton {
@@ -43,7 +43,7 @@ func functionOptions() []*linebot.QuickReplyButton {
 
 func SwitchMemberMenuView(title string, replies ...*linebot.QuickReplyButton) linebot.SendingMessage {
 	replies = append(replies, memberOptions()...)
-	return quickRepliesView(title, replies...)
+	return QuickRepliesView(title, replies...)
 }
 
 func memberOptions() []*linebot.QuickReplyButton {

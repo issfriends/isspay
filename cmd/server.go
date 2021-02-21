@@ -26,7 +26,7 @@ var (
 
 func init() {
 	Server.Flags().BoolVarP(&migration, "migration", "m", false, "run migration")
-	Server.Flags().BoolVarP(&testData, "testdata", "td", false, "create test data")
+	Server.Flags().BoolVarP(&testData, "testdata", "t", false, "create test data")
 }
 
 func runServer(cmd *cobra.Command, args []string) {

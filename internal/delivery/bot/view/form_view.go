@@ -11,7 +11,7 @@ import (
 var SignUpForm = chatbot.NewForm(SignUpCmd, "welcome iss", 60*time.Second).
 	SetInput("email", chatbot.TextMsg("請輸入你的 iss email")).
 	SetInput("nickname", chatbot.TextMsg("請輸入你的 nickname")).
-	SetInput("role", quickRepliesView("請選擇你的身份", memberInputReplies()...))
+	SetInput("role", QuickRepliesView("請選擇你的身份", memberInputReplies()...))
 
 func memberInputReplies() []*linebot.QuickReplyButton {
 	return []*linebot.QuickReplyButton{
