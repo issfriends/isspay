@@ -7,7 +7,7 @@ import (
 	"github.com/issfriends/isspay/internal/app/model"
 	"github.com/issfriends/isspay/internal/app/model/value"
 	"github.com/issfriends/isspay/internal/app/query"
-	"github.com/issfriends/isspay/internal/pkg/auth"
+	"github.com/issfriends/isspay/internal/pkg/encryptor"
 )
 
 type IdentityDatabaser interface {
@@ -17,7 +17,7 @@ type IdentityDatabaser interface {
 }
 
 type AccountServicer interface {
-	Login(ctx context.Context, email, password string) (*auth.Token, error)
+	Login(ctx context.Context, email, password string) (*encryptor.Token, error)
 	SignUpByChatbot(ctx context.Context, account *model.Account) error
 }
 
@@ -35,6 +35,6 @@ func (svc service) SignUpByChatbot(ctx context.Context, acc *model.Account) erro
 	return nil
 }
 
-func (svc service) Login(ctx context.Context, email, password string) (*auth.Token, error) {
+func (svc service) Login(ctx context.Context, email, password string) (*encryptor.Token, error) {
 	return nil, nil
 }
