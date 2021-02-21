@@ -1,14 +1,36 @@
 package server
 
-import "github.com/labstack/echo/v4"
+import (
+	"context"
+	"net/http"
 
-type Config struct {
-	Host string
-	Port int
+	"github.com/labstack/echo/v4"
+)
+
+// NewEcho new echo server engine
+func NewEcho(c *Config, routes ...func(e *echo.Echo)) (Server, error) {
+	e := echo.New()
+	e.Server.Addr = c.Addr()
+
+	for _, route := range routes {
+		route(e)
+	}
+
+	e.GET("/health", func(c echo.Context) error {
+		return c.String(http.StatusOK, "OK!")
+	})
+
+	return &echoAdapter{Echo: e}, nil
 }
 
-func New(c *Config) (*echo.Echo, error) {
-	e := echo.New()
+type echoAdapter struct {
+	*echo.Echo
+}
 
-	return e, nil
+func (server *echoAdapter) Run() error {
+	return server.StartServer(server.Server)
+}
+
+func (server *echoAdapter) Shutdown(ctx context.Context) error {
+	return server.Echo.Shutdown(ctx)
 }
