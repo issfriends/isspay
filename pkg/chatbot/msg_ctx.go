@@ -2,6 +2,7 @@ package chatbot
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 
@@ -93,14 +94,38 @@ type MsgContext struct {
 }
 
 func (c *MsgContext) ReplyMsg(msgs ...Message) error {
+	if len(msgs) > 5 || len(msgs) == 0 {
+		return errors.New("msgs size should between 0 and 5")
+	}
+
 	return c.client.Reply(c.GetReplyToken(), msgs...)
 }
 
 func (c *MsgContext) PushMsgs(msgID string, msgs ...Message) error {
-	return c.client.Push(msgID, msgs...)
+	if len(msgs) <= 5 {
+		return c.client.Push(msgID, msgs...)
+	}
+
+	n := len(msgs)
+	round := n / 5
+	if n%5 > 0 {
+		round++
+	}
+
+	for i := 0; i < round; i++ {
+		start := i * 5
+		end := start + 5
+		if end > n {
+			end = n
+		}
+		if err := c.client.Push(msgID, msgs[start:end]...); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
-func (c *MsgContext) PushTextf(f string, args ...interface{}) error {
+func (c *MsgContext) ReplyTextf(f string, args ...interface{}) error {
 	return c.client.Reply(c.GetReplyToken(), TextMsgf(f, args...))
 }
 
