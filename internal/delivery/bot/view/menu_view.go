@@ -9,8 +9,8 @@ func ShopMenuView(title string, replies ...*linebot.QuickReplyButton) linebot.Se
 
 func shopOptions() []*linebot.QuickReplyButton {
 	return []*linebot.QuickReplyButton{
-		linebot.NewQuickReplyButton("", NewPBAction("吃零食", ListProductsCmd.String()+"&type=snake")),
-		linebot.NewQuickReplyButton("", NewPBAction("喝飲料", ListProductsCmd.String()+"&type=drink")),
+		linebot.NewQuickReplyButton("", NewPBAction("吃零食", ListProductsCmd.With("category=snake"))),
+		linebot.NewQuickReplyButton("", NewPBAction("喝飲料", ListProductsCmd.With("category=drink"))),
 	}
 }
 

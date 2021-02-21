@@ -30,7 +30,7 @@ func productToCarouselColumn(product *model.Product) *linebot.CarouselColumn {
 	}
 	return &linebot.CarouselColumn{
 		Title:             product.Name,
-		Text:              fmt.Sprintf("數量:%d, 價格:%.2f", product.Quantity, product.Price),
+		Text:              fmt.Sprintf("數量:%d, 價格:%s", product.Quantity, product.Price.StringFixed(2)),
 		ThumbnailImageURL: imageURL,
 		Actions: []linebot.TemplateAction{
 			&linebot.PostbackAction{
