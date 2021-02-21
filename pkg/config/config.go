@@ -117,6 +117,7 @@ func (cfg *Config) ProvideDB() fx.Option {
 	)
 }
 
+// InvokeServer run server invoker
 func (cfg *Config) InvokeServer() fx.Option {
 	return fx.Invoke(
 		cfg.runServer,
@@ -128,7 +129,9 @@ func (cfg *Config) runServer(lc fx.Lifecycle, handler *restful.Handler, botHandl
 	if err != nil {
 		return err
 	}
-	botHandler.Routes(linebot)
+	if err := botHandler.Routes(linebot); err != nil {
+		return err
+	}
 
 	engine, err := server.NewEcho(cfg.HTTPServer, handler.Routes, linebot.HookOnEcho)
 	if err != nil {

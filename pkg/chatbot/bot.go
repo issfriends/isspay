@@ -47,6 +47,8 @@ type ChatBot interface {
 	SetForm(form *MsgForm)
 	SetMenu(menu linebot.RichMenu, imagePath string) error
 	HandleMsg(msg *MsgContext) error
+	SetErrHandle(errHandle ErrHandle)
+	SetNotFoundHandle(handle MsgHandle)
 }
 
 type (

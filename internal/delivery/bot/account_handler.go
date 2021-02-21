@@ -21,6 +21,11 @@ func (h AccountHandler) SignUpEndpoint(c *chatbot.MsgContext) error {
 	if err := c.Bind(account, "json"); err != nil {
 		return err
 	}
+	userProfile, err := c.GetCurrentUser()
+	if err != nil {
+		return err
+	}
+	account.UserName = userProfile.Username
 	if err := account.MessengerID.Scan(c.GetMessengerID()); err != nil {
 		return err
 	}
@@ -41,5 +46,6 @@ func (h AccountHandler) PaymentEndpoint(c *chatbot.MsgContext) error {
 }
 
 func (h AccountHandler) GetBalanceEndpoint(c *chatbot.MsgContext) error {
+
 	return c.PushTextf("payment!! balance:-100")
 }

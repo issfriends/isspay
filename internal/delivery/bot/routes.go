@@ -1,6 +1,9 @@
 package bot
 
 import (
+	"path/filepath"
+	"runtime"
+
 	"github.com/issfriends/isspay/internal/app"
 	"github.com/issfriends/isspay/internal/delivery/bot/view"
 	"github.com/issfriends/isspay/pkg/chatbot"
@@ -16,7 +19,11 @@ type Handler struct {
 	svc *app.Service
 }
 
-func (h *Handler) Routes(bot chatbot.ChatBot) {
+func (h *Handler) Routes(bot chatbot.ChatBot) error {
+	if err := bot.SetMenu(view.DefaultMenu, assets("linebot_menu_v1")); err != nil {
+		return err
+	}
+
 	bot.SetCommand(view.MenuCmd, h.Menu().MenuEndpoint)
 
 	bot.SetCommand(view.ListProductsCmd, h.Ordering().ListProductsEndpoint)
@@ -28,4 +35,11 @@ func (h *Handler) Routes(bot chatbot.ChatBot) {
 
 	bot.SetCommand(view.CheckBalanceCmd, h.Account().GetBalanceEndpoint)
 	bot.SetCommand(view.PaymentCmd, h.Account().PaymentEndpoint)
+	return nil
+}
+
+func assets(filename string) string {
+	_, f, _, _ := runtime.Caller(0)
+	dir := filepath.Dir(f)
+	return filepath.Join(dir, "../../../assets/image/"+filename+".png")
 }

@@ -22,22 +22,22 @@ func quickRepliesView(title string, replies ...*linebot.QuickReplyButton) linebo
 var DefaultMenu = linebot.RichMenu{
 	Size: linebot.RichMenuSize{
 		Width:  2500,
-		Height: 1600,
+		Height: 1686,
 	},
-	Name:        "test",
-	ChatBarText: "test123",
+	Name:        "menu",
+	ChatBarText: "menu",
 	Areas: []linebot.AreaDetail{
 		linebot.AreaDetail{
 			Bounds: linebot.RichMenuBounds{
-				X: 0, Y: 0, Width: 2500, Height: 800,
+				X: 0, Y: 17, Width: 830, Height: 830,
 			},
 			Action: linebot.RichMenuAction{
 				Type: linebot.RichMenuActionTypePostback,
-				Data: MenuCmd.With("menu=shop"),
+				Data: MenuCmd.With("menu=wallet"),
 			}},
 		linebot.AreaDetail{
 			Bounds: linebot.RichMenuBounds{
-				X: 4, Y: 900, Width: 830, Height: 800,
+				X: 840, Y: 12, Width: 830, Height: 830,
 			},
 			Action: linebot.RichMenuAction{
 				Type: linebot.RichMenuActionTypePostback,
@@ -46,19 +46,11 @@ var DefaultMenu = linebot.RichMenu{
 		},
 		linebot.AreaDetail{
 			Bounds: linebot.RichMenuBounds{
-				X: 840, Y: 900, Width: 830, Height: 800,
+				X: 1670, Y: 8, Width: 830, Height: 830,
 			},
 			Action: linebot.RichMenuAction{
 				Type: linebot.RichMenuActionTypePostback,
 				Data: MenuCmd.With("menu=function"),
-			}},
-		linebot.AreaDetail{
-			Bounds: linebot.RichMenuBounds{
-				X: 1683, Y: 900, Width: 830, Height: 800,
-			},
-			Action: linebot.RichMenuAction{
-				Type: linebot.RichMenuActionTypePostback,
-				Data: MenuCmd.With("menu=wallet"),
 			}},
 	},
 }
