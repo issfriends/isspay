@@ -1,20 +1,20 @@
 package account
 
-type AccountDatabaser interface {
+type Databaser interface {
 	IdentityDatabaser
 }
 
 type Servicer interface {
 	AccountServicer
-	// WalletServicer
+	WalletServicer
 }
 
-func New(db AccountDatabaser) Servicer {
+func New(db Databaser) Servicer {
 	return service{
 		db: db,
 	}
 }
 
 type service struct {
-	db AccountDatabaser
+	db Databaser
 }
