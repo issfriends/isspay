@@ -1,6 +1,6 @@
 package inventory
 
-type InventoryDatabaser interface {
+type Databaser interface {
 	ProductDatabaser
 }
 
@@ -8,12 +8,12 @@ type Servicer interface {
 	ProductServicer
 }
 
-func New(db InventoryDatabaser) Servicer {
+func New(db Databaser) Servicer {
 	return &inventorySvc{
 		db: db,
 	}
 }
 
 type inventorySvc struct {
-	db InventoryDatabaser
+	db Databaser
 }
