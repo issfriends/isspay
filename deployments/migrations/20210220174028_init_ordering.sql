@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS "orders" (
   FOREIGN KEY (wallet_id) REFERENCES wallets(id) ON DELETE CASCADE
 );
 
-comment on column orders.status is '訂單狀態 1) 未付款 2) 取消 3) 已付款';
+comment on column orders.status is '訂單狀態 1) 成功 2) 取消';
 
 CREATE INDEX idx_orders_wallet_id ON "orders" (wallet_id);
 CREATE INDEX idx_orders_paied_at ON "orders" (paied_at);

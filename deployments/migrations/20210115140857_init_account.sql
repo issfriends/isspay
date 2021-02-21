@@ -23,12 +23,15 @@ CREATE TABLE IF NOT EXISTS "wallets" (
   id bigserial,
   uid uuid UNIQUE NOT NULL DEFAULT uuid_generate_v4(),
   owner_id bigserial,
-  amount bigint,
+  amount decimal(10,2) DEFAULT 0,
   created_at timestamp DEFAULT now(),
   updated_at timestamp DEFAULT now(),
+  last_paied_at timestamp DEFAULT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY (owner_id) REFERENCES accounts(id) ON DELETE CASCADE
 );
+
+comment on column wallets.last_paied_at is '最後付清欠款的時間';
 
 -- +goose Down
 DROP TABLE IF EXISTS "wallets";
