@@ -36,6 +36,26 @@ make all
 
 ### Run Local Application
 
+requirements:
+
+1. [docker](https://docs.docker.com/engine/install/ubuntu/)
+2. [docker-compose](https://docs.docker.com/compose/install/)
+3. [linebot token](https://developers.line.biz/zh-hant/services/bot-designer/)
+
+steps:
+
+1. create docker.env file and copy line bot token and secret
+
+```shell
+  touch ./build/docker/.docker.env
+```
+
+2. run docker-compose file
+
+```shell
+docker-compose -f ./build/docker/docker-compose.yaml up
+```
+
 ### References
 
 - [linebot message type](https://developers.line.biz/en/docs/messaging-api/message-types/#template-messages)
