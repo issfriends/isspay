@@ -7,7 +7,7 @@ import (
 )
 
 type ListProductsQuery struct {
-	Category    value.ProductCategory `json:"catagory" query:"category"`
+	Category    value.ProductCategory `json:"category" query:"category"`
 	QuantityGte uint64                `json:"quantityGte" query:"quantityGte"`
 	QuantityLte uint64                `json:"quantityLte" query:"quantityLte"`
 	PriceGte    decimal.Decimal       `json:"priceGte" query:"priceGte"`
