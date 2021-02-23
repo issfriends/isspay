@@ -25,10 +25,12 @@ require (
 	github.com/vx416/govalidator v1.9.11
 	github.com/vx416/gox v0.0.7
 	go.uber.org/fx v1.13.1
-	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83 // indirect
+	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83
 	golang.org/x/mod v0.4.1 // indirect
 	golang.org/x/sys v0.0.0-20210220050731-9a76102bfb43 // indirect
 	golang.org/x/tools v0.1.0 // indirect
 	gorm.io/gorm v1.20.11
 	gotest.tools v2.2.0+incompatible // indirect
 )
+
+replace github.com/vx416/gox => /Users/vicxu/projects/gox

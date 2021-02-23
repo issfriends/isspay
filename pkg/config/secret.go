@@ -46,11 +46,8 @@ func initSecret() (*Secrets, error) {
 	return secrets, nil
 }
 
-// Key base64 encoded secret key
-type Key string
-
 // Secrets secret config
 type Secrets struct {
 	Linebot     *chatbot.Config `yaml:"linebot"`
-	TokenSecret Key             `yaml:"token_secret"`
+	TokenSecret string          `yaml:"token_secret"`
 }

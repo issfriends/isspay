@@ -36,5 +36,8 @@ func (svc service) SignUpByChatbot(ctx context.Context, acc *model.Account) erro
 }
 
 func (svc service) Login(ctx context.Context, email, password string) (*encryptor.Token, error) {
+	
+
+
 	return nil, nil
 }
