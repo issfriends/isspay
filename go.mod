@@ -32,5 +32,3 @@ require (
 	gorm.io/gorm v1.20.11
 	gotest.tools v2.2.0+incompatible // indirect
 )
-
-//replace github.com/vx416/gox => /Users/chloecheng/yyangc/gox
