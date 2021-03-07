@@ -22,3 +22,16 @@ func GetAccountScope(q *query.GetAccountQuery) func(db *gorm.DB) *gorm.DB {
 		return db
 	}
 }
+
+func GetWalletScope(q *query.GetWalletQuery) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if q.AccountID != 0 {
+			db = db.Where("wallets.owner_id = ?", q.AccountID)
+		}
+
+		if q.ID != 0 {
+			db = db.Where("wallets.id = ?", q.ID)
+		}
+		return db
+	}
+}

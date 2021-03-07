@@ -27,11 +27,13 @@ func (Account) TableName() string {
 }
 
 type Wallet struct {
-	ID      int64           `gorm:"column:id"`
-	UID     string          `gorm:"column:uid"`
-	Amount  decimal.Decimal `gorm:"column:amount"`
-	OwnerID int64           `gorm:"column:owner_id"`
-	Owner   *Account        `gorm:"foreignKey:OwnerID;references:ID"`
+	ID        int64           `gorm:"column:id"`
+	UID       string          `gorm:"column:uid"`
+	Amount    decimal.Decimal `gorm:"column:amount"`
+	OwnerID   int64           `gorm:"column:owner_id"`
+	CreatedAt time.Time       `gorm:"column:created_at" json:"createdAt"`
+	UpdatedAt time.Time       `gorm:"column:updated_at" json:"updatedAt"`
+	Owner     *Account        `gorm:"foreignKey:ID;references:OwnerID"`
 }
 
 func (Wallet) TableName() string {

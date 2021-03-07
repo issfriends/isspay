@@ -152,3 +152,90 @@ func (su *AccountSuite) TestGetAccount() {
 		})
 	}
 }
+
+func (su *AccountSuite) TestGetWallet() {
+	accounts := factory.Account.MustInsertN(3).([]*model.Account)
+	wallets := factory.Wallet.MustInsertN(3).([]*model.Wallet)
+
+	tests := []struct {
+		name        string
+		query       query.GetWalletQuery
+		wantWallet  *model.Wallet
+		wantAccount *model.Account
+		wantErr     bool
+	}{
+		{
+			name:        "get by ID",
+			query:       query.GetWalletQuery{ID: wallets[0].ID},
+			wantWallet:  wallets[0],
+			wantAccount: accounts[0],
+			wantErr:     false,
+		},
+		{
+			name:        "get by AccountID",
+			query:       query.GetWalletQuery{AccountID: accounts[1].ID},
+			wantWallet:  wallets[1],
+			wantAccount: accounts[1],
+			wantErr:     false,
+		},
+		{
+			name:        "get by AccountID & ID",
+			query:       query.GetWalletQuery{ID: wallets[1].ID, AccountID: accounts[1].ID},
+			wantWallet:  wallets[1],
+			wantAccount: accounts[1],
+			wantErr:     false,
+		},
+		{
+			name:        "get by MessengerID",
+			query:       query.GetWalletQuery{MessengerID: accounts[1].MessengerID.String},
+			wantWallet:  wallets[1],
+			wantAccount: accounts[1],
+			wantErr:     false,
+		},
+		{
+			name:        "get by MessengerID & ID",
+			query:       query.GetWalletQuery{MessengerID: accounts[1].MessengerID.String, ID: wallets[1].ID},
+			wantWallet:  wallets[1],
+			wantAccount: accounts[1],
+			wantErr:     false,
+		},
+		{
+			name:    "get by AccountID & ID -> record not found",
+			query:   query.GetWalletQuery{ID: wallets[0].ID, AccountID: accounts[1].ID},
+			wantErr: true,
+		},
+		{
+			name:    "get by ID -> record not found",
+			query:   query.GetWalletQuery{ID: 100},
+			wantErr: true,
+		},
+		{
+			name:    "get by MessengerID & ID -> record not found",
+			query:   query.GetWalletQuery{MessengerID: accounts[1].MessengerID.String, ID: wallets[0].ID},
+			wantErr: true,
+		},
+		{
+			name:    "get by MessengerID -> record not found",
+			query:   query.GetWalletQuery{MessengerID: "hello-everyone"},
+			wantErr: true,
+		},
+	}
+
+	for _, t := range tests {
+		su.Run(t.name, func() {
+			err := su.accountDB.GetWallet(su.Ctx, &t.query)
+			if t.wantErr {
+				su.Require().Error(err)
+				return
+			}
+
+			su.Require().NoError(err)
+			data := t.query.Data
+			su.Require().NotNil(data)
+			su.Require().Equal(t.wantWallet.ID, data.ID)
+			su.Require().Equal(t.wantWallet.UID, data.UID)
+			su.Require().Equal(t.wantWallet.OwnerID, data.OwnerID)
+			su.Require().True(reflect.DeepEqual(t.wantAccount, data.Owner))
+		})
+	}
+}

@@ -6,14 +6,14 @@ import (
 	"github.com/vx416/gox/dbprovider"
 )
 
+type Database struct {
+	gormDB dbprovider.GormProvider
+}
+
 func New(gormDB dbprovider.GormProvider) *Database {
 	return &Database{
 		gormDB: gormDB,
 	}
-}
-
-type Database struct {
-	gormDB dbprovider.GormProvider
 }
 
 func (db *Database) Account() *account.AccountDB {

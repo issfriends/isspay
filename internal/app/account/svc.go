@@ -2,6 +2,7 @@ package account
 
 type Databaser interface {
 	IdentityDatabaser
+	WalletDatabaser
 }
 
 type Servicer interface {

@@ -33,4 +33,4 @@ require (
 	gotest.tools v2.2.0+incompatible // indirect
 )
 
-replace github.com/vx416/gox => /Users/vicxu/projects/gox
+//replace github.com/vx416/gox => /Users/chloecheng/yyangc/gox
