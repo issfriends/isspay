@@ -39,6 +39,9 @@ func ListProductsScope(q *query.ListProductsQuery) func(db *gorm.DB) *gorm.DB {
 			db = db.Where("name IN (?)", q.Names)
 		}
 
+		if len(q.IDs) > 0 {
+			db = db.Where("id IN (?)", q.IDs)
+		}
 		return db
 	}
 }

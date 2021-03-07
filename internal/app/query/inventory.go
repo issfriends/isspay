@@ -12,6 +12,7 @@ type ListProductsQuery struct {
 	QuantityLte uint64                `json:"quantityLte" query:"quantityLte"`
 	PriceGte    decimal.Decimal       `json:"priceGte" query:"priceGte"`
 	PriceLte    decimal.Decimal       `json:"priceLte" query:"priceLte"`
+	IDs         []int64               `json:"ids" query:"ids"`
 	Names       []string              `json:"names" query:"names"`
 	NameLike    string                `json:"nameLike" query:"nameLike"`
 	Pagination

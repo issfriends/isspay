@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS "accounts" (
   nickname varchar(255),
   membership smallint,
   role smallint,
+  status int2 NOT NULL DEFAULT 1,
   created_at timestamp DEFAULT now(),
   updated_at timestamp DEFAULT now(),
   PRIMARY KEY (id)
@@ -17,12 +18,13 @@ CREATE TABLE IF NOT EXISTS "accounts" (
 
 comment on column accounts.role is '帳戶平台身份 1) admin 2) manager 3) normal user';
 comment on column accounts.membership is '帳戶學校身份 1) master 2) phd 3) faculty 4) professor 5) alumni';
+comment on column accounts.status is '狀態 1) 正常 2) 禁用';
 
 
 CREATE TABLE IF NOT EXISTS "wallets" (
   id bigserial,
   uid uuid UNIQUE NOT NULL DEFAULT uuid_generate_v4(),
-  owner_id bigserial,
+  owner_id int8 NOT NULL,
   amount decimal(10,2) DEFAULT 0,
   created_at timestamp DEFAULT now(),
   updated_at timestamp DEFAULT now(),

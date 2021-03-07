@@ -4,12 +4,14 @@ type Databaser interface {
 	OrderDatabaser
 }
 
-func New() Servicer {
-	return &orderingSvc{}
-}
-
 type Servicer interface {
 	OrderServicer
+}
+
+func New(db Databaser) Servicer {
+	return &orderingSvc{
+		db: db,
+	}
 }
 
 type orderingSvc struct {

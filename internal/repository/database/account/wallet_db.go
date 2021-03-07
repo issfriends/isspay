@@ -17,6 +17,10 @@ func (d *AccountDB) GetWallet(ctx context.Context, q *query.GetWalletQuery) erro
 	db := d.GetDB(ctx)
 	tx = db.Preload("Owner")
 
+	if q == nil {
+		q = &query.GetWalletQuery{}
+	}
+
 	if q.MessengerID != "" {
 		tx.Joins("JOIN accounts AS owner ON wallets.owner_id = Owner.id").
 			Where("Owner.messenger_id = ?", q.MessengerID)

@@ -35,6 +35,22 @@ const (
 
 type OrderStatus int8
 
+const (
+	Completed OrderStatus = iota + 1
+	Canceled
+)
+
+func (enum OrderStatus) String() string {
+	switch enum {
+	case Completed:
+		return "completed"
+	case Canceled:
+		return "canceled"
+	default:
+		return ""
+	}
+}
+
 type ProductCategory int8
 
 func (enum ProductCategory) String() string {
@@ -51,4 +67,11 @@ func (enum ProductCategory) String() string {
 const (
 	Snake ProductCategory = iota + 1
 	Drink
+)
+
+type AccountStatus int8
+
+const (
+	NormalStatus AccountStatus = iota + 1
+	ForbiddenStatus
 )

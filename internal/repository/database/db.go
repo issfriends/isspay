@@ -3,6 +3,7 @@ package database
 import (
 	"github.com/issfriends/isspay/internal/repository/database/account"
 	"github.com/issfriends/isspay/internal/repository/database/inventory"
+	"github.com/issfriends/isspay/internal/repository/database/ordering"
 	"github.com/vx416/gox/dbprovider"
 )
 
@@ -22,4 +23,8 @@ func (db *Database) Account() *account.AccountDB {
 
 func (db *Database) Inventory() *inventory.InventoryDB {
 	return &inventory.InventoryDB{GormProvider: db.gormDB}
+}
+
+func (db *Database) Ordering() *ordering.OrderingDB {
+	return &ordering.OrderingDB{GormProvider: db.gormDB}
 }
