@@ -71,7 +71,8 @@ func (h OrderingHandler) PurchaseProductEndpoint(c *chatbot.MsgContext) error {
 	order.OrderedProducts = []*model.OrderedProduct{orderedProduct}
 	order.UID = uuid.New().String()
 
-	balance, err := h.svc.Ordering.CreateOrder(ctx, order)
+	msgID := ""
+	balance, err := h.svc.Ordering.CreateOrderByMsgID(ctx, msgID, order)
 	if err != nil {
 		return err
 	}
@@ -89,7 +90,8 @@ func (h OrderingHandler) CancelOrderEndpoint(c *chatbot.MsgContext) error {
 		ctx      = c.Ctx
 	)
 
-	balance, err := h.svc.Ordering.CancelOrderByUID(ctx, orderUID)
+	msgID := ""
+	balance, err := h.svc.Ordering.CancelOrderByMsgID(ctx, msgID, orderUID)
 	if err != nil {
 		return err
 	}

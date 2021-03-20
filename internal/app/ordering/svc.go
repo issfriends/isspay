@@ -1,19 +1,17 @@
 package ordering
 
-type Databaser interface {
-	OrderDatabaser
-}
-
 type Servicer interface {
 	OrderServicer
 }
 
-func New(db Databaser) Servicer {
+func New(orderDB OrderDatabaser, accountDB AccountDatabaser) Servicer {
 	return &orderingSvc{
-		db: db,
+		orderDB:   orderDB,
+		accountDB: accountDB,
 	}
 }
 
 type orderingSvc struct {
-	db Databaser
+	orderDB   OrderDatabaser
+	accountDB AccountDatabaser
 }

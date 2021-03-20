@@ -32,6 +32,12 @@ func GetWalletScope(q *query.GetWalletQuery) func(db *gorm.DB) *gorm.DB {
 		if q.ID != 0 {
 			db = db.Where("wallets.id = ?", q.ID)
 		}
+
+		if q.MessengerID != "" {
+			db = db.Joins("JOIN accounts AS owner ON wallets.owner_id = owner.id").
+				Where("owner.messenger_id = ?", q.MessengerID)
+		}
+
 		return db
 	}
 }

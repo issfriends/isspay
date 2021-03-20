@@ -5,7 +5,7 @@ import (
 	"github.com/vx416/gox/dbprovider"
 )
 
-var _ ordering.Databaser = (*OrderingDB)(nil)
+var _ ordering.OrderDatabaser = (*OrderingDB)(nil)
 
 type OrderingDB struct {
 	dbprovider.GormProvider

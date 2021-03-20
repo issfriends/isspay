@@ -1,8 +1,11 @@
 package database
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
+
+	"github.com/shopspring/decimal"
 
 	"github.com/issfriends/isspay/internal/app/model"
 	"github.com/issfriends/isspay/internal/app/query"
@@ -238,4 +241,13 @@ func (su *AccountSuite) TestGetWallet() {
 			su.Require().True(reflect.DeepEqual(t.wantAccount, data.Owner))
 		})
 	}
+}
+
+func (su *AccountSuite) TestUpdateWalletAmount() {
+	account := factory.Account.MustInsert().(*model.Account)
+	wallet := factory.Wallet.OwnerID(account.ID).MustInsert().(*model.Wallet)
+	fmt.Printf("wallet before : %+v", wallet)
+	updateWallet := &model.Wallet{Amount: decimal.NewFromInt(100)}
+	_, err := su.accountDB.UpdateWalletAmount(su.Ctx, account.MessengerID.String, updateWallet)
+	su.Require().NoError(err)
 }
