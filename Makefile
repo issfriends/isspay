@@ -11,7 +11,6 @@ app.yaml:
 	cp $(CURDIR)/configs/app-dev.yaml $(CURDIR)/configs/app.yaml
 
 .PHONY: migrate.file
-
 migrate.file:
 	goose -dir $(CURDIR)/deployments/migrations create $(f) sql
 

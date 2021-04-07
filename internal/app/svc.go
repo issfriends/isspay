@@ -9,9 +9,9 @@ import (
 
 func New(db *database.Database) *Service {
 	return &Service{
-		Account:   account.New(db.Account()),
+		Account:   account.New(db.Account(), db.Account()),
 		Inventory: inventory.New(db.Inventory()),
-		Ordering:  ordering.New(db.Ordering(), db.Account()),
+		Ordering:  ordering.New(db.Ordering(), db.Account(), db.Inventory()),
 	}
 }
 

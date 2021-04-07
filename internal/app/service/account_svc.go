@@ -1,4 +1,4 @@
-package account
+package service
 
 import (
 	"context"
@@ -10,10 +10,12 @@ import (
 	"github.com/issfriends/isspay/internal/pkg/encryptor"
 )
 
-type IdentityDatabaser interface {
+type AccountDatabaser interface {
+	ExecuteTx(ctx context.Context, fn func(txCtx context.Context) error) error
+
 	CreateAccount(ctx context.Context, account *model.Account) error
 	GetAccount(ctx context.Context, q *query.GetAccountQuery) error
-	ExecuteTx(ctx context.Context, callback func(ctx context.Context) error) error
+	GetWallet(ctx context.Context, q *query.GetWalletQuery) error
 }
 
 type AccountServicer interface {
@@ -21,7 +23,19 @@ type AccountServicer interface {
 	SignUpByChatbot(ctx context.Context, account *model.Account) error
 }
 
-func (svc service) SignUpByChatbot(ctx context.Context, acc *model.Account) error {
+type AccountSvc struct {
+	accountDB AccountDatabaser
+}
+
+func (svc AccountSvc) GetWallet(ctx context.Context, q *query.GetWalletQuery) error {
+	err := svc.accountDB.GetWallet(ctx, q)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (svc AccountSvc) SignUpByChatbot(ctx context.Context, acc *model.Account) error {
 	acc.UID = uuid.New().String()
 	acc.Membership = value.NormalUser
 	acc.Wallet = &model.Wallet{
@@ -35,7 +49,7 @@ func (svc service) SignUpByChatbot(ctx context.Context, acc *model.Account) erro
 	return nil
 }
 
-func (svc service) Login(ctx context.Context, email, password string) (*encryptor.Token, error) {
+func (svc AccountSvc) Login(ctx context.Context, email, password string) (*encryptor.Token, error) {
 
 	return nil, nil
 }

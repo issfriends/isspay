@@ -8,6 +8,10 @@ import (
 	"github.com/shopspring/decimal"
 )
 
+const (
+	MaxArrearsDuration = 30 * 24 * time.Hour
+)
+
 type Account struct {
 	ID          int64               `gorm:"column:id" json:"id"`
 	UID         string              `gorm:"column:uid" json:"uid"`
@@ -28,15 +32,25 @@ func (Account) TableName() string {
 }
 
 type Wallet struct {
-	ID        int64           `gorm:"column:id"`
-	UID       string          `gorm:"column:uid"`
-	Amount    decimal.Decimal `gorm:"column:amount"`
-	OwnerID   int64           `gorm:"column:owner_id"`
-	CreatedAt time.Time       `gorm:"column:created_at" json:"createdAt"`
-	UpdatedAt time.Time       `gorm:"column:updated_at" json:"updatedAt"`
-	Owner     *Account        `gorm:"foreignKey:ID;references:OwnerID"`
+	ID          int64           `gorm:"column:id"`
+	UID         string          `gorm:"column:uid"`
+	Amount      decimal.Decimal `gorm:"column:amount"`
+	OwnerID     int64           `gorm:"column:owner_id"`
+	CreatedAt   time.Time       `gorm:"column:created_at" json:"createdAt"`
+	UpdatedAt   time.Time       `gorm:"column:updated_at" json:"updatedAt"`
+	LastPaiedAt time.Time       `gorm:"column:last_paied_at"`
+	Owner       *Account        `gorm:"foreignKey:ID;references:OwnerID"`
 }
 
 func (Wallet) TableName() string {
 	return "wallets"
+}
+
+func (model Wallet) CanPurchase(t time.Time) bool {
+	if model.Amount.LessThan(decimal.Zero) {
+		diff := t.Sub(model.LastPaiedAt)
+		return diff < MaxArrearsDuration
+	}
+
+	return true
 }

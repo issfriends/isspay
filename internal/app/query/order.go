@@ -15,7 +15,8 @@ type GetOrderQuery struct {
 	WalletID int64
 	Status   value.OrderStatus
 
-	Data *model.Order
+	HasOrderedProducts bool
+	Data               *model.Order
 }
 
 type ListOrdersQuery struct {

@@ -9,7 +9,10 @@ import (
 	"github.com/vx416/gox/dbprovider"
 )
 
-var _ account.Databaser = (*AccountDB)(nil)
+var (
+	_ account.IdentityDatabaser = (*AccountDB)(nil)
+	_ account.WalletDatabaser   = (*AccountDB)(nil)
+)
 
 type AccountDB struct {
 	dbprovider.GormProvider

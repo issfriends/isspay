@@ -9,3 +9,10 @@ type Sort struct {
 	SortField string `json:"sortField" query:"sortField"`
 	SortOrder string `json:"sortOrder" query:"sortOrder"`
 }
+
+type LockType int8
+
+const (
+	ReadLock LockType = iota + 1
+	WriteLock
+)

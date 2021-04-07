@@ -10,9 +10,7 @@ import (
 )
 
 func (h Handler) Account() AccountHandler {
-	return AccountHandler{
-		svc: h.svc,
-	}
+	return AccountHandler(h)
 }
 
 type AccountHandler struct {

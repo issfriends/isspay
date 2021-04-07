@@ -11,6 +11,10 @@ func GetOrderScope(q *query.GetOrderQuery) func(db *gorm.DB) *gorm.DB {
 			return db
 		}
 
+		if q.HasOrderedProducts {
+			db = db.Preload("OrderedProducts")
+		}
+
 		if q.ID != 0 {
 			db = db.Where("id = ?", q.ID)
 		}

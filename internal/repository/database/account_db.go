@@ -1,16 +1,45 @@
-package account
+package database
 
 import (
 	"context"
 	"fmt"
 	"time"
 
-	"github.com/shopspring/decimal"
-	"github.com/vx416/gox/log"
-
 	"github.com/issfriends/isspay/internal/app/model"
 	"github.com/issfriends/isspay/internal/app/query"
+	"github.com/issfriends/isspay/internal/app/service"
+	"github.com/issfriends/isspay/internal/repository/database/scope"
+	"github.com/shopspring/decimal"
+	"github.com/vx416/gox/log"
 )
+
+var _ service.AccountDatabaser = (*AccountDB)(nil)
+
+type AccountDB struct {
+	*DBAdapter
+}
+
+func (d AccountDB) CreateAccount(ctx context.Context, account *model.Account) error {
+	db := d.GetDB(ctx)
+
+	if err := db.Create(account).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (d AccountDB) GetAccount(ctx context.Context, q *query.GetAccountQuery) error {
+	data := &model.Account{}
+	db := d.GetDB(ctx)
+
+	err := db.Preload("Wallet").Scopes(scope.GetAccountScope(q)).First(data).Error
+	if err != nil {
+		return err
+	}
+
+	q.Data = data
+	return nil
+}
 
 func (d *AccountDB) GetWallet(ctx context.Context, q *query.GetWalletQuery) error {
 	data := &model.Wallet{}
@@ -21,7 +50,7 @@ func (d *AccountDB) GetWallet(ctx context.Context, q *query.GetWalletQuery) erro
 		q = &query.GetWalletQuery{}
 	}
 
-	err := db.Scopes(GetWalletScope(q)).First(data).Error
+	err := db.Scopes(scope.GetWalletScope(q)).First(data).Error
 	if err != nil {
 		return err
 	}
@@ -33,7 +62,7 @@ func (d *AccountDB) GetWallet(ctx context.Context, q *query.GetWalletQuery) erro
 func (d *AccountDB) UpdateWallet(ctx context.Context, q *query.GetWalletQuery, wallet *model.Wallet) error {
 	db := d.GetDB(ctx)
 
-	err := db.Scopes(GetWalletScope(q)).Updates(wallet).Error
+	err := db.Scopes(scope.GetWalletScope(q)).Updates(wallet).Error
 	if err != nil {
 		return err
 	}

@@ -1,7 +1,6 @@
 package bot
 
 import (
-	"github.com/google/uuid"
 	"github.com/issfriends/isspay/internal/app"
 	"github.com/issfriends/isspay/internal/app/model"
 	"github.com/issfriends/isspay/internal/app/model/value"
@@ -12,7 +11,7 @@ import (
 
 // Ordering ordering domain handler
 func (h Handler) Ordering() OrderingHandler {
-	return OrderingHandler{svc: h.svc}
+	return OrderingHandler(h)
 }
 
 // OrderingHandler order and inventory handler
@@ -68,11 +67,9 @@ func (h OrderingHandler) PurchaseProductEndpoint(c *chatbot.MsgContext) error {
 	if err := c.Bind(orderedProduct, "json"); err != nil {
 		return err
 	}
-	order.OrderedProducts = []*model.OrderedProduct{orderedProduct}
-	order.UID = uuid.New().String()
 
-	msgID := ""
-	balance, err := h.svc.Ordering.CreateOrderByMsgID(ctx, msgID, order)
+	// msgID := ""
+	balance, err := h.svc.Ordering.CreateOrder(ctx, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -90,8 +87,8 @@ func (h OrderingHandler) CancelOrderEndpoint(c *chatbot.MsgContext) error {
 		ctx      = c.Ctx
 	)
 
-	msgID := ""
-	balance, err := h.svc.Ordering.CancelOrderByMsgID(ctx, msgID, orderUID)
+	// msgID := ""
+	balance, err := h.svc.Ordering.CancelOrder(ctx, nil, orderUID)
 	if err != nil {
 		return err
 	}

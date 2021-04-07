@@ -23,7 +23,7 @@ func ProductsMenuMsg(products []*model.Product) linebot.SendingMessage {
 }
 
 func productToCarouselColumn(product *model.Product) *linebot.CarouselColumn {
-	productPBData := PurchaseProductCmd.With("productID=%d&quantity=%d", product.ID, 1)
+	productPBData := PurchaseProductCmd.With("productID=%d&quantity=%d&price=%s", product.ID, 1, product.Price.String())
 	imageURL := product.ImageURL
 	if imageURL == "" {
 		imageURL = defaultImageURL

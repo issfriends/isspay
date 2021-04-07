@@ -17,7 +17,7 @@ func (d *OrderingDB) CreateOrder(ctx context.Context, order *model.Order) error 
 	return nil
 }
 
-func (d *OrderingDB) UpdateOrder(ctx context.Context) error {
+func (d *OrderingDB) UpdateOrder(ctx context.Context, q *query.GetOrderQuery, updateOrder *model.Order) error {
 	return nil
 }
 
@@ -25,7 +25,7 @@ func (d *OrderingDB) GetOrder(ctx context.Context, q *query.GetOrderQuery) error
 	db := d.GetDB(ctx)
 	q.Data = &model.Order{}
 
-	err := db.Preload("OrderedProducts").Scopes(GetOrderScope(q)).First(q.Data).Error
+	err := db.Scopes(GetOrderScope(q)).First(q.Data).Error
 	if err != nil {
 		return err
 	}

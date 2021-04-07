@@ -1,30 +1,33 @@
 package database
 
 import (
-	"github.com/issfriends/isspay/internal/repository/database/account"
-	"github.com/issfriends/isspay/internal/repository/database/inventory"
-	"github.com/issfriends/isspay/internal/repository/database/ordering"
+	"github.com/issfriends/isspay/internal/app/service"
 	"github.com/vx416/gox/dbprovider"
 )
 
+var (
+	_ service.AccountDatabaser = (*Database)(nil)
+	_ service.WalletDatabaser  = (*Database)(nil)
+	_ service.ProductDatabaser = (*Database)(nil)
+)
+
+type DBAdapter struct {
+	dbprovider.GormProvider
+}
+
 type Database struct {
-	gormDB dbprovider.GormProvider
+	dbprovider.GormProvider
+	*AccountDB
+	*WalletDB
+	*ProductDB
 }
 
 func New(gormDB dbprovider.GormProvider) *Database {
+	adapter := &DBAdapter{GormProvider: gormDB}
 	return &Database{
-		gormDB: gormDB,
+		GormProvider: gormDB,
+		AccountDB:    &AccountDB{DBAdapter: adapter},
+		WalletDB:     &WalletDB{DBAdapter: adapter},
+		ProductDB:    &ProductDB{DBAdapter: adapter},
 	}
-}
-
-func (db *Database) Account() *account.AccountDB {
-	return &account.AccountDB{GormProvider: db.gormDB}
-}
-
-func (db *Database) Inventory() *inventory.InventoryDB {
-	return &inventory.InventoryDB{GormProvider: db.gormDB}
-}
-
-func (db *Database) Ordering() *ordering.OrderingDB {
-	return &ordering.OrderingDB{GormProvider: db.gormDB}
 }

@@ -4,14 +4,20 @@ type Servicer interface {
 	OrderServicer
 }
 
-func New(orderDB OrderDatabaser, accountDB AccountDatabaser) Servicer {
+func New(
+	orderDB OrderDatabaser,
+	accountDB AccountDatabaser,
+	inventoryDB InventoryDatabaser,
+) Servicer {
 	return &orderingSvc{
-		orderDB:   orderDB,
-		accountDB: accountDB,
+		orderDB:     orderDB,
+		accountDB:   accountDB,
+		inventoryDB: inventoryDB,
 	}
 }
 
 type orderingSvc struct {
-	orderDB   OrderDatabaser
-	accountDB AccountDatabaser
+	orderDB     OrderDatabaser
+	accountDB   AccountDatabaser
+	inventoryDB InventoryDatabaser
 }

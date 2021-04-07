@@ -18,6 +18,7 @@ type GetWalletQuery struct {
 	MessengerID string
 
 	Data *model.Wallet
+	Lock LockType
 }
 
 type MakePaymentQuery struct {
