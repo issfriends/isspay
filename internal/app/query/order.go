@@ -16,6 +16,7 @@ type GetOrderQuery struct {
 	Status   value.OrderStatus
 
 	HasOrderedProducts bool
+	HasWallet          bool
 	Data               *model.Order
 }
 

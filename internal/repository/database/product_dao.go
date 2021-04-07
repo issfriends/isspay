@@ -9,11 +9,11 @@ import (
 	"gorm.io/gorm"
 )
 
-type ProductDB struct {
+type ProductDao struct {
 	*DBAdapter
 }
 
-func (d *ProductDB) ListProducts(ctx context.Context, q *query.ListProductsQuery) (int64, error) {
+func (d *ProductDao) ListProducts(ctx context.Context, q *query.ListProductsQuery) (int64, error) {
 	var (
 		products = make([]*model.Product, 0, 1)
 		total    int64
@@ -34,7 +34,7 @@ func (d *ProductDB) ListProducts(ctx context.Context, q *query.ListProductsQuery
 	return total, nil
 }
 
-func (d *ProductDB) BatchCreateProducts(ctx context.Context, products []*model.Product) error {
+func (d *ProductDao) BatchCreateProducts(ctx context.Context, products []*model.Product) error {
 	db := d.GetDB(ctx)
 
 	err := db.CreateInBatches(products, len(products)).Error
@@ -44,7 +44,7 @@ func (d *ProductDB) BatchCreateProducts(ctx context.Context, products []*model.P
 	return nil
 }
 
-func (d *ProductDB) CreateProduct(ctx context.Context, product *model.Product) error {
+func (d *ProductDao) CreateProduct(ctx context.Context, product *model.Product) error {
 	db := d.GetDB(ctx)
 
 	if err := db.Create(product).Error; err != nil {
@@ -53,7 +53,7 @@ func (d *ProductDB) CreateProduct(ctx context.Context, product *model.Product) e
 	return nil
 }
 
-func (d *ProductDB) UpdateProduct(ctx context.Context, q *query.GetProductQuery, updateData *model.Product) error {
+func (d *ProductDao) UpdateProduct(ctx context.Context, q *query.GetProductQuery, updateData *model.Product) error {
 	db := d.GetDB(ctx)
 
 	err := db.Table(updateData.TableName()).Scopes(scope.GetProductScope(q)).Updates(updateData).Error
@@ -64,7 +64,7 @@ func (d *ProductDB) UpdateProduct(ctx context.Context, q *query.GetProductQuery,
 	return nil
 }
 
-func (d *ProductDB) GetProduct(ctx context.Context, q *query.GetProductQuery) error {
+func (d *ProductDao) GetProduct(ctx context.Context, q *query.GetProductQuery) error {
 	db := d.GetDB(ctx)
 	q.Data = &model.Product{}
 
@@ -76,7 +76,7 @@ func (d *ProductDB) GetProduct(ctx context.Context, q *query.GetProductQuery) er
 	return nil
 }
 
-func (d *ProductDB) DeleteProduct(ctx context.Context, q *query.GetProductQuery) error {
+func (d *ProductDao) DeleteProduct(ctx context.Context, q *query.GetProductQuery) error {
 	db := d.GetDB(ctx)
 
 	err := db.Unscoped().Scopes(scope.GetProductScope(q)).Delete(model.Product{}).Error
@@ -87,7 +87,7 @@ func (d *ProductDB) DeleteProduct(ctx context.Context, q *query.GetProductQuery)
 	return nil
 }
 
-func (d *ProductDB) UpdateProductQuantity(ctx context.Context, productID int64, delta int64) error {
+func (d *ProductDao) UpdateProductQuantity(ctx context.Context, productID uint64, delta int64) error {
 	var (
 		db   = d.GetDB(ctx)
 		prod = &model.Product{ID: productID}

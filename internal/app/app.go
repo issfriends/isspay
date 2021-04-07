@@ -7,12 +7,16 @@ import (
 
 func New(db *database.Database) *App {
 	return &App{
-		Account:   &service.AccountSvc{AccountDatabaser: db},
-		Inventory: &service.InventorySvc{InventoryDatabaser: db},
+		Account:   service.NewAccount(db),
+		Auth:      service.NewAuth(db),
+		Inventory: service.NewInventory(db),
+		Order:     service.NewOrder(db),
 	}
 }
 
 type App struct {
 	Account   service.AccountServicer
 	Inventory service.InventoryServicer
+	Auth      service.AuthServicer
+	Order     service.OrderServicer
 }

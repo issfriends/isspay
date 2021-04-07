@@ -12,12 +12,10 @@ type Token struct {
 
 // Claims user claims
 type Claims struct {
-	AccountUID  string
-	Email       string
-	Username    string
-	MessengerID string
-	Role        int64
-	Membership  int64
+	AccountID  uint64
+	WalletID   uint64
+	Role       int64
+	Membership int64
 	jwt.StandardClaims
 }
 

@@ -13,7 +13,7 @@ const (
 )
 
 type Account struct {
-	ID          int64               `gorm:"column:id" json:"id"`
+	ID          uint64              `gorm:"column:id" json:"id"`
 	UID         string              `gorm:"column:uid" json:"uid"`
 	Email       string              `gorm:"column:email" json:"email"`
 	UserName    string              `gorm:"column:username" json:"username"`
@@ -32,7 +32,7 @@ func (Account) TableName() string {
 }
 
 type Wallet struct {
-	ID          int64           `gorm:"column:id"`
+	ID          uint64          `gorm:"column:id"`
 	UID         string          `gorm:"column:uid"`
 	Amount      decimal.Decimal `gorm:"column:amount"`
 	OwnerID     int64           `gorm:"column:owner_id"`

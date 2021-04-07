@@ -1,3 +1,7 @@
 package value
 
-type Eamil string
+type Email string
+
+func (val Email) CheckIssEmail() error {
+	return nil
+}

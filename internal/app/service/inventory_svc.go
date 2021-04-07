@@ -27,6 +27,12 @@ type InventoryServicer interface {
 	DeleteProduct(ctx context.Context, q *query.GetProductQuery) error
 }
 
-type InventorySvc struct {
+func NewInventory(db InventoryDatabaser) InventoryServicer {
+	return &inventorySvc{
+		InventoryDatabaser: db,
+	}
+}
+
+type inventorySvc struct {
 	InventoryDatabaser
 }

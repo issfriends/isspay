@@ -8,7 +8,7 @@ import (
 )
 
 type Product struct {
-	ID        int64                 `gorm:"column:id" json:"id"`
+	ID        uint64                `gorm:"column:id" json:"id"`
 	UID       string                `gorm:"column:uid;default:uuid_generate_v4()" json:"uid"`
 	Name      string                `gorm:"column:name" json:"name"`
 	Price     decimal.Decimal       `gorm:"column:price" json:"price"`

@@ -1,7 +1,6 @@
 package config
 
 import (
-	"context"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -10,9 +9,6 @@ import (
 
 	"go.uber.org/fx"
 
-	"github.com/issfriends/isspay/internal/delivery/bot"
-	"github.com/issfriends/isspay/internal/delivery/restful"
-	"github.com/issfriends/isspay/pkg/chatbot"
 	"github.com/issfriends/isspay/pkg/server"
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/viper"
@@ -107,52 +103,52 @@ type Config struct {
 	Secrets *Secrets
 }
 
-// ProvideDB provide fx db options
-func (cfg *Config) ProvideDB() fx.Option {
-	gormCfg := newGormConfig(cfg.App.Env)
+// // ProvideDB provide fx db options
+// func (cfg *Config) ProvideDB() fx.Option {
+// 	gormCfg := newGormConfig(cfg.App.Env)
 
-	return fx.Options(
-		fx.Supply(gormCfg),
-		fx.Provide(dbprovider.NewGorm),
-	)
-}
+// 	return fx.Options(
+// 		fx.Supply(gormCfg),
+// 		fx.Provide(dbprovider.NewGorm),
+// 	)
+// }
 
-// InvokeServer run server invoker
-func (cfg *Config) InvokeServer() fx.Option {
-	return fx.Invoke(
-		cfg.runServer,
-	)
-}
+// // InvokeServer run server invoker
+// func (cfg *Config) InvokeServer() fx.Option {
+// 	return fx.Invoke(
+// 		cfg.runServer,
+// 	)
+// }
 
-func (cfg *Config) runServer(lc fx.Lifecycle, handler *restful.Handler, botHandler *bot.Handler) error {
-	linebot, err := chatbot.NewLineBot(cfg.Secrets.Linebot)
-	if err != nil {
-		return err
-	}
-	if err := botHandler.Routes(linebot); err != nil {
-		return err
-	}
+// func (cfg *Config) runServer(lc fx.Lifecycle, handler *restful.Handler, botHandler *bot.Handler) error {
+// 	linebot, err := chatbot.NewLineBot(cfg.Secrets.Linebot)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	if err := botHandler.Routes(linebot); err != nil {
+// 		return err
+// 	}
 
-	engine, err := server.NewEcho(cfg.HTTPServer, handler.Routes, linebot.HookOnEcho)
-	if err != nil {
-		return err
-	}
+// 	engine, err := server.NewEcho(cfg.HTTPServer, handler.Routes, linebot.HookOnEcho)
+// 	if err != nil {
+// 		return err
+// 	}
 
-	lc.Append(
-		fx.Hook{
-			OnStart: func(ctx context.Context) error {
-				go func() {
-					if err := engine.Run(); err != nil {
-						log.Get().Errorf("server: run server failed, err:%+v", err)
-					}
-				}()
-				return nil
-			},
-			OnStop: func(ctx context.Context) error {
-				return engine.Shutdown(ctx)
-			},
-		},
-	)
+// 	lc.Append(
+// 		fx.Hook{
+// 			OnStart: func(ctx context.Context) error {
+// 				go func() {
+// 					if err := engine.Run(); err != nil {
+// 						log.Get().Errorf("server: run server failed, err:%+v", err)
+// 					}
+// 				}()
+// 				return nil
+// 			},
+// 			OnStop: func(ctx context.Context) error {
+// 				return engine.Shutdown(ctx)
+// 			},
+// 		},
+// 	)
 
-	return nil
-}
+// 	return nil
+// }

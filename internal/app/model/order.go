@@ -52,9 +52,9 @@ func (model *Order) Setup(walletID int64) {
 }
 
 type OrderedProduct struct {
-	ID        int64           `gorm:"column:id" json:"id"`
-	OrderID   int64           `gorm:"column:order_id" json:"order_id"`
-	ProductID int64           `gorm:"column:product_id" json:"productID"`
+	ID        uint64          `gorm:"column:id" json:"id"`
+	OrderID   uint64          `gorm:"column:order_id" json:"order_id"`
+	ProductID uint64          `gorm:"column:product_id" json:"productID"`
 	Quantity  uint64          `gorm:"column:quantity" json:"quantity"`
 	Price     decimal.Decimal `gorm:"column:price" json:"price"`
 }

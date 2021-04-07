@@ -10,6 +10,8 @@ type GetAccountQuery struct {
 	ID          int64
 	MessengerID string
 	Data        *model.Account
+
+	HasWallet bool
 }
 
 type GetWalletQuery struct {
@@ -17,8 +19,9 @@ type GetWalletQuery struct {
 	AccountID   int64
 	MessengerID string
 
-	Data *model.Wallet
-	Lock LockType
+	HasOwner bool
+	Data     *model.Wallet
+	Lock     LockType
 }
 
 type MakePaymentQuery struct {

@@ -14,7 +14,7 @@ func (h Handler) Account() AccountHandler {
 }
 
 type AccountHandler struct {
-	svc *app.Service
+	svc *app.App
 }
 
 func (h AccountHandler) SignUpEndpoint(c *chatbot.MsgContext) error {

@@ -7,44 +7,18 @@ import (
 
 	"github.com/issfriends/isspay/internal/app/model"
 	"github.com/issfriends/isspay/internal/app/query"
-	"github.com/issfriends/isspay/internal/app/service"
 	"github.com/issfriends/isspay/internal/repository/database/scope"
 	"github.com/shopspring/decimal"
 	"github.com/vx416/gox/log"
 )
 
-var _ service.AccountDatabaser = (*AccountDB)(nil)
-
-type AccountDB struct {
+type WalletDao struct {
 	*DBAdapter
 }
 
-func (d AccountDB) CreateAccount(ctx context.Context, account *model.Account) error {
-	db := d.GetDB(ctx)
-
-	if err := db.Create(account).Error; err != nil {
-		return err
-	}
-	return nil
-}
-
-func (d AccountDB) GetAccount(ctx context.Context, q *query.GetAccountQuery) error {
-	data := &model.Account{}
-	db := d.GetDB(ctx)
-
-	err := db.Preload("Wallet").Scopes(scope.GetAccountScope(q)).First(data).Error
-	if err != nil {
-		return err
-	}
-
-	q.Data = data
-	return nil
-}
-
-func (d *AccountDB) GetWallet(ctx context.Context, q *query.GetWalletQuery) error {
+func (d *WalletDao) GetWallet(ctx context.Context, q *query.GetWalletQuery) error {
 	data := &model.Wallet{}
 	db := d.GetDB(ctx)
-	db = db.Preload("Owner")
 
 	if q == nil {
 		q = &query.GetWalletQuery{}
@@ -59,7 +33,7 @@ func (d *AccountDB) GetWallet(ctx context.Context, q *query.GetWalletQuery) erro
 	return nil
 }
 
-func (d *AccountDB) UpdateWallet(ctx context.Context, q *query.GetWalletQuery, wallet *model.Wallet) error {
+func (d *WalletDao) UpdateWallet(ctx context.Context, q *query.GetWalletQuery, wallet *model.Wallet) error {
 	db := d.GetDB(ctx)
 
 	err := db.Scopes(scope.GetWalletScope(q)).Updates(wallet).Error
@@ -70,7 +44,7 @@ func (d *AccountDB) UpdateWallet(ctx context.Context, q *query.GetWalletQuery, w
 	return nil
 }
 
-func (d *AccountDB) UpdateWalletAmount(ctx context.Context, id int64, delta decimal.Decimal, isPay bool) (balance decimal.Decimal, err error) {
+func (d *WalletDao) UpdateWalletAmount(ctx context.Context, walletID uint64, delta decimal.Decimal, isPay bool) (balance decimal.Decimal, err error) {
 	var (
 		amount     decimal.Decimal
 		db         = d.GetDB(ctx)
@@ -87,7 +61,7 @@ func (d *AccountDB) UpdateWalletAmount(ctx context.Context, id int64, delta deci
 		whereStmt = "id = $4"
 		args = append(args, time.Now().UTC())
 	}
-	args = append(args, id)
+	args = append(args, walletID)
 
 	statement := fmt.Sprintf(`
 		UPDATE wallets as w SET %s
@@ -102,11 +76,11 @@ func (d *AccountDB) UpdateWalletAmount(ctx context.Context, id int64, delta deci
 	row := sqlDB.QueryRow(statement, args...)
 	err = row.Err()
 	if err != nil {
-		log.Ctx(ctx).Debugf(statement+" delta:%s, id:%d", delta.String(), id)
+		log.Ctx(ctx).Debugf(statement+" delta:%s, id:%d", delta.String(), walletID)
 		return decimal.Zero, err
 	}
 
-	log.Ctx(ctx).Debugf(statement+" delta:%s, id:%d", delta.String(), id)
+	log.Ctx(ctx).Debugf(statement+" delta:%s, id:%d", delta.String(), walletID)
 	if err = row.Scan(&amount); err != nil {
 		return amount, err
 	}

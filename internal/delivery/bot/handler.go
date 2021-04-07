@@ -10,7 +10,7 @@ import (
 )
 
 // New new a chatbot handler
-func New(svc *app.Service) *Handler {
+func New(svc *app.App) *Handler {
 	return &Handler{
 		svc: svc,
 	}
@@ -18,7 +18,7 @@ func New(svc *app.Service) *Handler {
 
 // Handler chatbot handler
 type Handler struct {
-	svc *app.Service
+	svc *app.App
 }
 
 // Routes set chatbot routes
