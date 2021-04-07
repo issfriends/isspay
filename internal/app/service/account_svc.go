@@ -7,7 +7,7 @@ import (
 	"github.com/issfriends/isspay/internal/app/model"
 	"github.com/issfriends/isspay/internal/app/model/value"
 	"github.com/issfriends/isspay/internal/app/query"
-	"github.com/issfriends/isspay/internal/pkg/encryptor"
+	"github.com/issfriends/isspay/internal/pkg/crypto"
 )
 
 type AccountDatabaser interface {
@@ -19,20 +19,13 @@ type AccountDatabaser interface {
 }
 
 type AccountServicer interface {
-	Login(ctx context.Context, email, password string) (*encryptor.Token, error)
+	Login(ctx context.Context, email, password string) (*crypto.Token, error)
+	GetAccount(ctx context.Context, q *query.GetAccountQuery) error
 	SignUpByChatbot(ctx context.Context, account *model.Account) error
 }
 
 type AccountSvc struct {
-	accountDB AccountDatabaser
-}
-
-func (svc AccountSvc) GetWallet(ctx context.Context, q *query.GetWalletQuery) error {
-	err := svc.accountDB.GetWallet(ctx, q)
-	if err != nil {
-		return err
-	}
-	return nil
+	AccountDatabaser
 }
 
 func (svc AccountSvc) SignUpByChatbot(ctx context.Context, acc *model.Account) error {
@@ -42,14 +35,14 @@ func (svc AccountSvc) SignUpByChatbot(ctx context.Context, acc *model.Account) e
 		UID: uuid.New().String(),
 	}
 
-	if err := svc.accountDB.CreateAccount(ctx, acc); err != nil {
+	if err := svc.AccountDatabaser.CreateAccount(ctx, acc); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (svc AccountSvc) Login(ctx context.Context, email, password string) (*encryptor.Token, error) {
+func (svc AccountSvc) Login(ctx context.Context, email, password string) (*crypto.Token, error) {
 
 	return nil, nil
 }

@@ -11,10 +11,6 @@ var (
 	_ service.ProductDatabaser = (*Database)(nil)
 )
 
-type DBAdapter struct {
-	dbprovider.GormProvider
-}
-
 type Database struct {
 	dbprovider.GormProvider
 	*AccountDB
@@ -30,4 +26,8 @@ func New(gormDB dbprovider.GormProvider) *Database {
 		WalletDB:     &WalletDB{DBAdapter: adapter},
 		ProductDB:    &ProductDB{DBAdapter: adapter},
 	}
+}
+
+type DBAdapter struct {
+	dbprovider.GormProvider
 }

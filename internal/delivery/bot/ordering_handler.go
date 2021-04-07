@@ -16,7 +16,7 @@ func (h Handler) Ordering() OrderingHandler {
 
 // OrderingHandler order and inventory handler
 type OrderingHandler struct {
-	svc *app.Service
+	svc *app.App
 }
 
 // ListProductsEndpoint list products endpoint

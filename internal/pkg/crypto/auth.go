@@ -1,4 +1,4 @@
-package encryptor
+package crypto
 
 import (
 	jwt "github.com/dgrijalva/jwt-go"

@@ -36,7 +36,7 @@ type TestInstance struct {
 	Ctx      context.Context
 	DB       dbprovider.GormProvider
 	Database *database.Database
-	Svc      *app.Service
+	Svc      *app.App
 	Serv     *echo.Echo
 	Bot      chatbot.ChatBot
 	App      *fx.App

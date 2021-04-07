@@ -1,4 +1,4 @@
-package encryptor
+package crypto
 
 import (
 	"database/sql/driver"
