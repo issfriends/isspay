@@ -13,7 +13,7 @@ import (
 )
 
 type AuthCacher interface {
-	CacheToken(ctx context.Context, token *crypto.Token, fromMsgID bool) error
+	CacheTokenWithMsgID(ctx context.Context, token *crypto.Token, msgID string) error
 }
 
 type AuthDatabaser interface {
@@ -29,8 +29,11 @@ type AuthServicer interface {
 	RefreshChatbotToken(ctx context.Context, messengerID string) (*crypto.Claims, error)
 }
 
-func NewAuth(db AuthDatabaser) AuthServicer {
-	return &authSvc{AuthDatabaser: db}
+func NewAuth(db AuthDatabaser, cache AuthCacher) AuthServicer {
+	return &authSvc{
+		AuthDatabaser: db,
+		AuthCacher:    cache,
+	}
 }
 
 type authSvc struct {
@@ -85,10 +88,10 @@ func (svc authSvc) RefreshChatbotToken(ctx context.Context, messengerID string) 
 
 	account := getAccQ.Data
 
-	return svc.cacheToken(ctx, account, true)
+	return svc.cacheToken(ctx, account, messengerID)
 }
 
-func (svc authSvc) cacheToken(ctx context.Context, account *model.Account, fromMsg bool) (*crypto.Claims, error) {
+func (svc authSvc) cacheToken(ctx context.Context, account *model.Account, msgID string) (*crypto.Claims, error) {
 	claims := &crypto.Claims{
 		AccountID:  account.ID,
 		WalletID:   account.Wallet.ID,
@@ -102,7 +105,7 @@ func (svc authSvc) cacheToken(ctx context.Context, account *model.Account, fromM
 		return nil, err
 	}
 
-	err = svc.CacheToken(ctx, token, true)
+	err = svc.CacheTokenWithMsgID(ctx, token, msgID)
 	if err != nil {
 		return nil, err
 	}

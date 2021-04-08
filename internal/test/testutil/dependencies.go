@@ -7,6 +7,7 @@ import (
 
 	"github.com/pressly/goose"
 	gofactory "github.com/vx416/gogo-factory"
+	"github.com/vx416/gox/cache"
 	"github.com/vx416/gox/dbprovider"
 	"github.com/vx416/gox/log"
 	"gorm.io/gorm"
@@ -40,6 +41,23 @@ func (ti *TestInstance) buildGorm() (dbprovider.GormProvider, error) {
 		return nil, err
 	}
 	return db, nil
+}
+
+func (ti *TestInstance) buildRedis() (*cache.RedisClient, error) {
+	_, err := ti.RunRedis("isspay_cache_test", "16379")
+	if err != nil {
+		return nil, err
+	}
+
+	redisCfg := cache.RedisCfg{
+		Host:       "localhost",
+		Port:       "16379",
+		DB:         0,
+		LockPrefix: "test",
+		LockTTLSec: 10,
+	}
+
+	return cache.NewRedis(&redisCfg)
 }
 
 func (ti *TestInstance) setupFactory(db dbprovider.GormProvider) error {

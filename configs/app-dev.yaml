@@ -12,6 +12,8 @@ db:
   # maxopenconns:
   # maxidletimesec:
   # maxlifetimesec:
+cache:
+  
 log:
   env: dev
   type: zap

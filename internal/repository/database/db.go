@@ -11,14 +11,6 @@ var (
 	_ service.AuthDatabaser    = (*Database)(nil)
 )
 
-type Database struct {
-	dbprovider.GormProvider
-	*AccountDao
-	*WalletDao
-	*ProductDao
-	*OrderDao
-}
-
 func New(gormDB dbprovider.GormProvider) *Database {
 	adapter := &DBAdapter{GormProvider: gormDB}
 	return &Database{
@@ -28,6 +20,14 @@ func New(gormDB dbprovider.GormProvider) *Database {
 		ProductDao:   &ProductDao{DBAdapter: adapter},
 		OrderDao:     &OrderDao{DBAdapter: adapter},
 	}
+}
+
+type Database struct {
+	dbprovider.GormProvider
+	*AccountDao
+	*WalletDao
+	*ProductDao
+	*OrderDao
 }
 
 type DBAdapter struct {

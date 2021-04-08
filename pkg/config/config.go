@@ -12,6 +12,7 @@ import (
 	"github.com/issfriends/isspay/pkg/server"
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/viper"
+	"github.com/vx416/gox/cache"
 	"github.com/vx416/gox/dbprovider"
 	"github.com/vx416/gox/log"
 )
@@ -96,9 +97,11 @@ type Config struct {
 		Env  Env    `yaml:"env"`
 	} `yaml:"app"`
 
-	DB         *dbprovider.DBConfig `yaml:"db"`
-	Log        *log.Config          `yaml:"log"`
-	HTTPServer *server.Config       `yaml:"http_server"`
+	DB    *dbprovider.DBConfig `yaml:"db"`
+	Cache *cache.RedisCfg      `yaml:"cache"`
+
+	Log        *log.Config    `yaml:"log"`
+	HTTPServer *server.Config `yaml:"http_server"`
 
 	Secrets *Secrets
 }
