@@ -9,7 +9,7 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-func NewOrder(walletID int64, orderedProducts ...*OrderedProduct) *Order {
+func NewOrder(walletID uint64, orderedProducts ...*OrderedProduct) *Order {
 	amount := decimal.Zero
 	for _, op := range orderedProducts {
 		amount = amount.Add(op.GetCost())
@@ -25,9 +25,9 @@ func NewOrder(walletID int64, orderedProducts ...*OrderedProduct) *Order {
 }
 
 type Order struct {
-	ID              int64             `gorm:"column:id" json:"id"`
+	ID              uint64            `gorm:"column:id" json:"id"`
 	UID             string            `gorm:"column:uid" json:"uid"`
-	WalletID        int64             `gorm:"column:wallet_id" json:"wallet_id"`
+	WalletID        uint64            `gorm:"column:wallet_id" json:"wallet_id"`
 	Status          value.OrderStatus `gorm:"column:status" json:"status"`
 	Amount          decimal.Decimal   `gorm:"column:amount" json:"amount"`
 	CreatedAt       time.Time         `gorm:"column:created_at" json:"created_at"`
@@ -38,17 +38,6 @@ type Order struct {
 
 func (model Order) TableName() string {
 	return "orders"
-}
-
-func (model *Order) Setup(walletID int64) {
-	amount := decimal.Zero
-	for _, op := range model.OrderedProducts {
-		amount = amount.Add(op.GetCost())
-	}
-	model.UID = uuid.New().String()
-	model.Amount = amount
-	model.Status = value.Completed
-	model.WalletID = walletID
 }
 
 type OrderedProduct struct {

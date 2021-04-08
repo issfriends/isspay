@@ -6,12 +6,10 @@ import (
 	"fmt"
 
 	"github.com/issfriends/isspay/internal/app"
-	"github.com/issfriends/isspay/internal/delivery/bot"
 	"github.com/issfriends/isspay/internal/delivery/restful"
 	"github.com/issfriends/isspay/internal/repository/database"
 	"github.com/issfriends/isspay/pkg/chatbot"
 	"github.com/labstack/echo/v4"
-	"github.com/stretchr/testify/suite"
 	"github.com/vx416/gox/container"
 	"github.com/vx416/gox/dbprovider"
 
@@ -86,11 +84,11 @@ func (ti *TestInstance) ProvideBotHandler() fx.Option {
 		ti.ProvideSvc(),
 		fx.Provide(
 			chatbot.TestBot,
-			bot.New,
+			// bot.New,
 		),
-		fx.Invoke(func(h *bot.Handler, chatbot chatbot.ChatBot) {
-			h.Routes(chatbot)
-		}),
+		// fx.Invoke(func(h *bot.Handler, chatbot chatbot.ChatBot) {
+		// 	h.Routes(chatbot)
+		// }),
 		fx.Populate(&ti.Bot),
 	)
 }
@@ -108,15 +106,6 @@ func (ti *TestInstance) Start(option fx.Option) error {
 	}
 	ti.App = app
 	return nil
-}
-
-// SetupAssertion setup assertion helper
-func (ti *TestInstance) SetupAssertion(s suite.Suite) {
-	ti.AssertHelper = &Assertion{
-		Suite:    s,
-		Database: ti.Database,
-		Ctx:      ti.Ctx,
-	}
 }
 
 // Shutdown shutdown test application

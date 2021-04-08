@@ -25,7 +25,7 @@ func (f *AccountFactory) Role(role value.Role) *AccountFactory {
 
 var Account = &AccountFactory{gofactory.New(
 	&model.Account{},
-	attr.Int("ID", genutil.SeqInt(1, 1)),
+	attr.Uint("ID", genutil.SeqUint(1, 1)),
 	attr.Str("UID", genutil.RandUUID()),
 	attr.Str("Email", randomdata.Email),
 	attr.Str("MessengerID", genutil.RandAlph(15)),

@@ -4,7 +4,6 @@ import (
 	"os"
 
 	"github.com/issfriends/isspay/internal/app"
-	"github.com/issfriends/isspay/internal/delivery/bot"
 	"github.com/issfriends/isspay/internal/delivery/restful"
 	"github.com/issfriends/isspay/internal/repository/database"
 	"github.com/issfriends/isspay/pkg/config"
@@ -45,14 +44,14 @@ func runServer(cmd *cobra.Command, args []string) {
 
 	opts := fx.Options(
 		fx.Supply(*cfg),
-		cfg.ProvideDB(),
+		// cfg.ProvideDB(),
 		fx.Provide(
 			database.New,
 			app.New,
 			restful.New,
-			bot.New,
+			// bot.New,
 		),
-		cfg.InvokeServer(),
+		// cfg.InvokeServer(),
 	)
 
 	if migration {

@@ -1,4 +1,4 @@
-// package httphandler
+package httphandler
 
 // import (
 // 	"net/http"

@@ -48,7 +48,7 @@ func (f *ProductFactory) Quantity(quantity uint) *ProductFactory {
 
 var Product = &ProductFactory{gofactory.New(
 	&model.Product{},
-	attr.Int("ID", genutil.SeqInt(1, 1)),
+	attr.Uint("ID", genutil.SeqUint(1, 1)),
 	attr.Str("UID", genutil.RandUUID()),
 	attr.Str("Name", genutil.RandName(3)).Process(func(a attr.Attributer) error {
 		p := a.GetObject().(*model.Product)

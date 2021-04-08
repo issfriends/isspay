@@ -61,7 +61,7 @@ func (svc orderSvc) CreateOrder(ctx context.Context, order *model.Order) (decima
 		return nil
 	})
 	if err != nil {
-		return decimal.Zero, nil
+		return decimal.Zero, err
 	}
 
 	return balance, nil
@@ -105,7 +105,7 @@ func (svc orderSvc) CancelOrder(ctx context.Context, orderID uint64) (decimal.De
 		return nil
 	})
 	if err != nil {
-		return decimal.Zero, nil
+		return decimal.Zero, err
 	}
 
 	return balance, nil

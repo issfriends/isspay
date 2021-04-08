@@ -35,7 +35,7 @@ type Wallet struct {
 	ID          uint64          `gorm:"column:id"`
 	UID         string          `gorm:"column:uid"`
 	Amount      decimal.Decimal `gorm:"column:amount"`
-	OwnerID     int64           `gorm:"column:owner_id"`
+	OwnerID     uint64          `gorm:"column:owner_id"`
 	CreatedAt   time.Time       `gorm:"column:created_at" json:"createdAt"`
 	UpdatedAt   time.Time       `gorm:"column:updated_at" json:"updatedAt"`
 	LastPaiedAt time.Time       `gorm:"column:last_paied_at"`

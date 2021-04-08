@@ -13,10 +13,10 @@ type OrderFactory struct {
 	*gofactory.Factory
 }
 
-func (f *OrderFactory) WalletId(walletID int64) *OrderFactory {
+func (f *OrderFactory) WalletId(walletID uint64) *OrderFactory {
 	return &OrderFactory{
 		f.Attrs(
-			attr.Int("WalletID", genutil.FixInt(int(walletID))),
+			attr.Uint("WalletID", genutil.FixUint(uint(walletID))),
 		),
 	}
 }
@@ -41,9 +41,9 @@ func (f *OrderFactory) Amount(a float64) *OrderFactory {
 
 var Order = &OrderFactory{gofactory.New(
 	&model.Order{},
-	attr.Int("ID", genutil.SeqInt(1, 1)),
+	attr.Uint("ID", genutil.SeqUint(1, 1)),
 	attr.Str("UID", genutil.RandUUID()),
-	attr.Int("WalletID", genutil.SeqInt(1, 1)),
+	attr.Uint("WalletID", genutil.SeqUint(1, 1)),
 	attr.Int("Status", genutil.RandInt(1, 2)),
 	attr.Float("Amount", genutil.RandFloat(1, 2)),
 	attr.Time("CreatedAt", genutil.Now(time.UTC)),
@@ -84,10 +84,10 @@ func (f *OrderedProductsFactory) ProductIDs(productIDs ...int64) *OrderedProduct
 	}
 }
 
-func (f *OrderedProductsFactory) OrderID(orderID int64) *OrderedProductsFactory {
+func (f *OrderedProductsFactory) OrderID(orderID uint64) *OrderedProductsFactory {
 	return &OrderedProductsFactory{
 		f.Attrs(
-			attr.Int("OrderID", genutil.FixInt(int(orderID))),
+			attr.Uint("OrderID", genutil.FixUint(uint(orderID))),
 		),
 	}
 }
