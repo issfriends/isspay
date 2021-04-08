@@ -63,10 +63,10 @@ func (f *OrderedProductsFactory) PriceQuantity(price float64, quantity int64) *O
 	}
 }
 
-func (f *OrderedProductsFactory) ProductID(productID int64) *OrderedProductsFactory {
+func (f *OrderedProductsFactory) ProductID(productID uint64) *OrderedProductsFactory {
 	return &OrderedProductsFactory{
 		f.Attrs(
-			attr.Int("ProductID", genutil.FixInt(int(productID))),
+			attr.Uint("ProductID", genutil.FixUint(uint(productID))),
 		),
 	}
 }
@@ -107,9 +107,9 @@ func (f *OrderedProductsFactory) OrderIDs(orderIDs ...int64) *OrderedProductsFac
 
 var OrderedProducts = &OrderedProductsFactory{gofactory.New(
 	&model.OrderedProduct{},
-	attr.Int("ID", genutil.SeqInt(1, 1)),
-	attr.Int("ProductID", genutil.SeqInt(1, 1)),
-	attr.Int("OrderID", genutil.SeqInt(1, 1)),
+	attr.Uint("ID", genutil.SeqUint(1, 1)),
+	attr.Uint("ProductID", genutil.SeqUint(1, 1)),
+	attr.Uint("OrderID", genutil.SeqUint(1, 1)),
 	attr.Float("Price", genutil.RandFloat(20, 50)),
 	attr.Uint("Quantity", genutil.RandUint(1, 10)),
 ).Table("ordered_products")}

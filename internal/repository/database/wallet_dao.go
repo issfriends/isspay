@@ -76,7 +76,7 @@ func (d *WalletDao) UpdateWalletAmount(ctx context.Context, walletID uint64, del
 	row := sqlDB.QueryRow(statement, args...)
 	err = row.Err()
 	if err != nil {
-		log.Ctx(ctx).Debugf(statement+" delta:%s, id:%d", delta.String(), walletID)
+		log.Ctx(ctx).Errorf(statement+" delta:%s, id:%d", delta.String(), walletID)
 		return decimal.Zero, err
 	}
 

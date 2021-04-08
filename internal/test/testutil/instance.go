@@ -40,8 +40,6 @@ type TestInstance struct {
 	Serv     *echo.Echo
 	Bot      chatbot.ChatBot
 	App      *fx.App
-
-	AssertHelper *Assertion
 }
 
 // ProvideDB provide db layer fx options
