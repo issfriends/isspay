@@ -24,7 +24,7 @@ type OrderDatabaser interface {
 
 type OrderServicer interface {
 	CreateOrder(ctx context.Context, order *model.Order) (balance decimal.Decimal, err error)
-	CancelOrder(ctx context.Context, orderID uint64) (balance decimal.Decimal, err error)
+	CancelOrder(ctx context.Context, orderUID string) (balance decimal.Decimal, err error)
 }
 
 func NewOrder(db OrderDatabaser) OrderServicer {
@@ -67,7 +67,7 @@ func (svc orderSvc) CreateOrder(ctx context.Context, order *model.Order) (decima
 	return balance, nil
 }
 
-func (svc orderSvc) CancelOrder(ctx context.Context, orderID uint64) (decimal.Decimal, error) {
+func (svc orderSvc) CancelOrder(ctx context.Context, orderUID string) (decimal.Decimal, error) {
 	var (
 		balance decimal.Decimal
 		err     error
@@ -75,7 +75,7 @@ func (svc orderSvc) CancelOrder(ctx context.Context, orderID uint64) (decimal.De
 
 	err = svc.OrderDatabaser.ExecuteTx(ctx, func(txCtx context.Context) error {
 		getOrderQ := &query.GetOrderQuery{
-			ID:                 int64(orderID),
+			UID:                orderUID,
 			HasOrderedProducts: true,
 		}
 

@@ -7,7 +7,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/issfriends/isspay/internal/app/model"
-	"github.com/issfriends/isspay/internal/app/model/value"
 	"github.com/issfriends/isspay/internal/app/query"
 	"github.com/issfriends/isspay/internal/pkg/crypto"
 	"github.com/issfriends/isspay/pkg/config"
@@ -18,13 +17,15 @@ type AuthCacher interface {
 }
 
 type AuthDatabaser interface {
+	ExecuteTx(ctx context.Context, fn func(txCtx context.Context) error) error
+
 	CreateAccount(ctx context.Context, account *model.Account) error
 	GetAccount(ctx context.Context, q *query.GetAccountQuery) error
 }
 
 type AuthServicer interface {
 	// Login(ctx context.Context)
-	SignUpByChatbot(ctx context.Context, email value.Email, userName, messengerID string) error
+	SignUpByChatbot(ctx context.Context, account *model.Account) error
 	RefreshChatbotToken(ctx context.Context, messengerID string) (*crypto.Claims, error)
 }
 
@@ -37,34 +38,36 @@ type authSvc struct {
 	AuthCacher
 }
 
-func (svc authSvc) SignUpByChatbot(ctx context.Context, email value.Email, userName, messengerID string) error {
-	getAccQ := &query.GetAccountQuery{
-		Email: string(email),
-	}
-	err := svc.AuthDatabaser.GetAccount(ctx, getAccQ)
-	if err != nil {
-		return err
-	}
+func (svc authSvc) SignUpByChatbot(ctx context.Context, account *model.Account) error {
 
-	if getAccQ.Data != nil {
-		// duplicate error
-		return errors.New("duplicated")
-	}
+	svc.AuthDatabaser.ExecuteTx(ctx, func(txCtx context.Context) error {
+		getAccQ := &query.GetAccountQuery{
+			Email: string(account.Email),
+		}
+		err := svc.AuthDatabaser.GetAccount(ctx, getAccQ)
+		if err != nil {
+			return err
+		}
 
-	account := &model.Account{
-		Email:      string(email),
-		UserName:   userName,
-		Membership: value.NormalUser,
-		UID:        uuid.New().String(),
-		Wallet: &model.Wallet{
-			UID: uuid.New().String(),
-		},
-	}
+		if getAccQ.Data != nil {
+			// duplicate error
+			return errors.New("duplicated")
+		}
 
-	err = svc.AuthDatabaser.CreateAccount(ctx, account)
-	if err != nil {
-		return err
-	}
+		account.UID = uuid.New().String()
+
+		err = svc.AuthDatabaser.CreateAccount(ctx, account)
+		if err != nil {
+			return err
+		}
+
+		_, err = svc.RefreshChatbotToken(ctx, account.MessengerID.String)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
 
 	return nil
 }
@@ -82,6 +85,10 @@ func (svc authSvc) RefreshChatbotToken(ctx context.Context, messengerID string) 
 
 	account := getAccQ.Data
 
+	return svc.cacheToken(ctx, account, true)
+}
+
+func (svc authSvc) cacheToken(ctx context.Context, account *model.Account, fromMsg bool) (*crypto.Claims, error) {
 	claims := &crypto.Claims{
 		AccountID:  account.ID,
 		WalletID:   account.Wallet.ID,
@@ -99,6 +106,5 @@ func (svc authSvc) RefreshChatbotToken(ctx context.Context, messengerID string) 
 	if err != nil {
 		return nil, err
 	}
-
 	return claims, nil
 }

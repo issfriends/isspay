@@ -29,7 +29,7 @@ func TestMsgCtx(cmd Command, data map[string]string) *MsgContext {
 
 func TestForm(cmd Command, texts ...string) []*MsgContext {
 	msgs := []*MsgContext{
-		&MsgContext{
+		{
 			Cmd:      cmd,
 			client:   &MockClient{},
 			Ctx:      context.Background(),
