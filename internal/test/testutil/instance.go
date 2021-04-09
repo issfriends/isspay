@@ -9,6 +9,7 @@ import (
 	"github.com/issfriends/isspay/internal/delivery/restful"
 	"github.com/issfriends/isspay/internal/repository/database"
 	"github.com/issfriends/isspay/pkg/chatbot"
+	"github.com/issfriends/isspay/pkg/i18n"
 	"github.com/labstack/echo/v4"
 	"github.com/vx416/gox/container"
 	"github.com/vx416/gox/dbprovider"
@@ -47,7 +48,7 @@ func (ti *TestInstance) ProvideDB() fx.Option {
 			ti.buildGorm,
 			database.New,
 		),
-		fx.Invoke(ti.setupMigration, ti.setupFactory, ti.setupLog),
+		fx.Invoke(ti.setupMigration, ti.setupFactory, ti.setupLog, i18n.Initi18n),
 		fx.Populate(&ti.DB, &ti.Database),
 	)
 }

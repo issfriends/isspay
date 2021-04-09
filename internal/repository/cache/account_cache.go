@@ -24,3 +24,19 @@ func (cache AccountCache) CacheTokenWithMsgID(ctx context.Context, token *crypto
 
 	return nil
 }
+
+func (cache AccountCache) GetTokenByMsgID(ctx context.Context, msgID string) (*crypto.Token, error) {
+	tokenStr, err := cache.Client.Get(ctx, tokenKey+":"+msgID).Result()
+	if err != nil {
+		return nil, err
+	}
+	expiredAt, err := cache.Client.TTL(ctx, tokenKey+":"+msgID).Result()
+	if err != nil {
+		return nil, err
+	}
+
+	return &crypto.Token{
+		AccessToken: tokenStr,
+		ExpiredAt:   int64(expiredAt),
+	}, nil
+}

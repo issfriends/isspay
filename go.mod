@@ -16,6 +16,7 @@ require (
 	github.com/line/line-bot-sdk-go v7.7.0+incompatible
 	github.com/mattn/go-sqlite3 v1.14.6 // indirect
 	github.com/mitchellh/mapstructure v1.4.0
+	github.com/nicksnyder/go-i18n/v2 v2.1.2
 	github.com/pressly/goose v2.7.0+incompatible
 	github.com/shopspring/decimal v1.2.0
 	github.com/sirupsen/logrus v1.7.0 // indirect
@@ -30,7 +31,9 @@ require (
 	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2
 	golang.org/x/mod v0.4.1 // indirect
 	golang.org/x/sys v0.0.0-20210220050731-9a76102bfb43 // indirect
+	golang.org/x/text v0.3.4
 	golang.org/x/tools v0.1.0 // indirect
+	gopkg.in/yaml.v2 v2.3.0
 	gorm.io/gorm v1.20.11
 	gotest.tools v2.2.0+incompatible // indirect
 )

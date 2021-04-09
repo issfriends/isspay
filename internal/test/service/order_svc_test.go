@@ -142,7 +142,7 @@ func (s *OrderSvcSuite) TestCancelOrder() {
 	for _, tc := range tcs {
 		s.Run(tc.name, func() {
 			w, o := tc.setup()
-			balance, err := s.Svc.Order.CancelOrder(s.Ctx, o.UID)
+			balance, _, err := s.Svc.Order.CancelOrder(s.Ctx, w.ID, o.UID)
 
 			if tc.happy {
 				s.Require().NoError(err)

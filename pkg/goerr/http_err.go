@@ -9,4 +9,6 @@ import (
 var (
 	ErrUnprocessableEntity  = resperr.NewRespErr(http.StatusUnprocessableEntity)
 	ErrParitalUnprocessable = resperr.NewRespErr(422001, http.StatusText(http.StatusUnprocessableEntity))
+
+	ErrResourceConflict = resperr.NewRespErr(http.StatusConflict)
 )

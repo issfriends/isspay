@@ -7,6 +7,7 @@ import (
 	"github.com/issfriends/isspay/internal/app/query"
 	"github.com/issfriends/isspay/internal/delivery/bot/view"
 	"github.com/issfriends/isspay/pkg/chatbot"
+	"github.com/issfriends/isspay/pkg/i18n"
 )
 
 // Ordering ordering domain handler
@@ -16,7 +17,7 @@ func (h Handler) Ordering() OrderingHandler {
 
 // OrderingHandler order and inventory handler
 type OrderingHandler struct {
-	svc *app.App
+	*app.App
 }
 
 // ListProductsEndpoint list products endpoint
@@ -32,7 +33,7 @@ func (h OrderingHandler) ListProductsEndpoint(c *chatbot.MsgContext) error {
 		QuantityGte: 1,
 	}
 
-	total, err := h.svc.Inventory.ListProducts(ctx, q)
+	total, err := h.Inventory.ListProducts(ctx, q)
 	if err != nil {
 		return err
 	}
@@ -60,7 +61,6 @@ func (h OrderingHandler) ListProductsEndpoint(c *chatbot.MsgContext) error {
 func (h OrderingHandler) PurchaseProductEndpoint(c *chatbot.MsgContext) error {
 	var (
 		orderedProduct = &model.OrderedProduct{}
-		order          = &model.Order{}
 		ctx            = c.Ctx
 	)
 
@@ -68,14 +68,28 @@ func (h OrderingHandler) PurchaseProductEndpoint(c *chatbot.MsgContext) error {
 		return err
 	}
 
-	// msgID := ""
-	balance, err := h.svc.Order.CreateOrder(ctx, nil)
+	claims, err := GetClaims(c)
+	if err != nil {
+		return err
+	}
+
+	order := model.NewOrder(claims.WalletID, orderedProduct)
+	balance, err := h.Order.CreateOrder(ctx, nil)
+	if err != nil {
+		return err
+	}
+
+	text, err := i18n.ZhTW("create_order_reply", map[string]interface{}{
+		"ProductName": c.GetValue("productName"),
+		"ProductCost": order.Amount,
+		"Amount":      balance,
+	})
 	if err != nil {
 		return err
 	}
 
 	return c.ReplyMsg(
-		chatbot.TextMsgf("購買成功，目前錢包餘額 %s", balance.StringFixed(2)),
+		chatbot.TextMsg(text),
 		view.ShopMenuView("再來一點", view.OrderCancelBtn(order.UID)),
 	)
 }
@@ -83,15 +97,30 @@ func (h OrderingHandler) PurchaseProductEndpoint(c *chatbot.MsgContext) error {
 // CancelOrderEndpoint cancel order endpoint
 func (h OrderingHandler) CancelOrderEndpoint(c *chatbot.MsgContext) error {
 	var (
-		// orderUID = c.GetValue("orderUID")
-		ctx = c.Ctx
+		orderUID = c.GetValue("orderUID")
+		ctx      = c.Ctx
 	)
 
-	// msgID := ""
-	balance, err := h.svc.Order.CancelOrder(ctx, "")
+	claims, err := GetClaims(c)
 	if err != nil {
 		return err
 	}
 
-	return c.ReplyMsg(chatbot.TextMsgf("訂單取消成功，目前錢包餘額 %s", balance.StringFixed(2)), view.ShopMenuView("再來一點"))
+	balance, order, err := h.Order.CancelOrder(ctx, claims.WalletID, orderUID)
+	if err != nil {
+		return err
+	}
+
+	text, err := i18n.ZhTW("cancel_order_relpy", map[string]interface{}{
+		"ProductCost": order.Amount,
+		"Amount":      balance,
+	})
+	if err != nil {
+		return err
+	}
+
+	return c.ReplyMsg(
+		chatbot.TextMsg(text),
+		view.ShopMenuView("再來一點"),
+	)
 }

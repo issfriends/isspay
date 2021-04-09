@@ -31,6 +31,10 @@ func (Account) TableName() string {
 	return "accounts"
 }
 
+func (model Account) IsIssEmail() bool {
+	return false
+}
+
 type Wallet struct {
 	ID          uint64          `gorm:"column:id"`
 	UID         string          `gorm:"column:uid"`

@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 
 	"github.com/issfriends/isspay/internal/app/model"
 	"github.com/issfriends/isspay/internal/app/model/value"
@@ -24,7 +25,7 @@ type OrderDatabaser interface {
 
 type OrderServicer interface {
 	CreateOrder(ctx context.Context, order *model.Order) (balance decimal.Decimal, err error)
-	CancelOrder(ctx context.Context, orderUID string) (balance decimal.Decimal, err error)
+	CancelOrder(ctx context.Context, walletID uint64, orderUID string) (balance decimal.Decimal, order *model.Order, err error)
 }
 
 func NewOrder(db OrderDatabaser) OrderServicer {
@@ -67,9 +68,10 @@ func (svc orderSvc) CreateOrder(ctx context.Context, order *model.Order) (decima
 	return balance, nil
 }
 
-func (svc orderSvc) CancelOrder(ctx context.Context, orderUID string) (decimal.Decimal, error) {
+func (svc orderSvc) CancelOrder(ctx context.Context, walletID uint64, orderUID string) (decimal.Decimal, *model.Order, error) {
 	var (
 		balance decimal.Decimal
+		order   *model.Order
 		err     error
 	)
 
@@ -83,7 +85,11 @@ func (svc orderSvc) CancelOrder(ctx context.Context, orderUID string) (decimal.D
 		if err != nil {
 			return err
 		}
-		order := getOrderQ.Data
+		order = getOrderQ.Data
+
+		if order.WalletID != walletID {
+			return errors.New("unath")
+		}
 
 		balance, err = svc.OrderDatabaser.UpdateWalletAmount(txCtx, uint64(order.WalletID), order.Amount, false)
 		if err != nil {
@@ -105,8 +111,8 @@ func (svc orderSvc) CancelOrder(ctx context.Context, orderUID string) (decimal.D
 		return nil
 	})
 	if err != nil {
-		return decimal.Zero, err
+		return decimal.Zero, nil, err
 	}
 
-	return balance, nil
+	return balance, order, nil
 }

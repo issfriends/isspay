@@ -1,25 +1,42 @@
 package value
 
-type Membership int8
-
 const (
 	Admin Membership = iota + 1
 	Manager
 	NormalUser
 )
 
+type Membership int8
+
 type Role int8
+
+func (enum *Role) FromString(str string) error {
+	switch str {
+	case "master", "碩士":
+		*enum = Master
+	case "faculty", "教職員":
+		*enum = Faculty
+	case "phd", "博士":
+		*enum = Phd
+	case "alumni", "校友":
+		*enum = Alumni
+	default:
+	}
+	return nil
+}
 
 func (enum Role) String() string {
 	switch enum {
 	case Master:
 		return "master"
 	case Faculty:
-		return "phd"
-	case Professor:
 		return "faculty"
-	case Alumni:
+	case Professor:
 		return "professor"
+	case Phd:
+		return "phd"
+	case Alumni:
+		return "alumni"
 	default:
 		return ""
 	}

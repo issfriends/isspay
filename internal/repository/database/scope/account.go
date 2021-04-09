@@ -5,7 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetAccountScope(q *query.GetAccountQuery) func(db *gorm.DB) *gorm.DB {
+func GetAccount(q *query.GetAccountQuery) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		if q.MessengerID != "" {
 			db = db.Where("messenger_id = ?", q.MessengerID)

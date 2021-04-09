@@ -34,5 +34,11 @@ func (d *OrderDao) GetOrder(ctx context.Context, q *query.GetOrderQuery) error {
 }
 
 func (d *OrderDao) UpdateOrder(ctx context.Context, q *query.GetOrderQuery, updateOrder *model.Order) error {
+	db := d.GetDB(ctx)
+
+	err := db.Table(updateOrder.TableName()).Scopes(scope.GetOrder(q)).Updates(updateOrder).Error
+	if err != nil {
+		return err
+	}
 	return nil
 }

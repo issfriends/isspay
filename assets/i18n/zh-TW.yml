@@ -1,0 +1,17 @@
+# account
+sign_up_reply:
+  other: "註冊成功，{{.NickName}} 你好～～"
+switch_membership_reply:
+  other: "切換會員資格成功，{{.NickName}} 目前是 {{.Membership}}"
+payment_reply:
+  other: "還款成功，總共還款金額 {{.Amount}}，目前餘額 {{.Balance}}"
+get_balance_reply:
+  other: "目前餘額為 {{.Amount}}"
+
+# order
+create_order_reply:
+  other: "購買成功 {{.ProductName}}，花費 {{.ProductCost}}，目前錢包餘額 {{.Amount}}"
+cancel_order_relpy:
+  other:  "取消購買成功，退還 {{.ProductCost}}，目前錢包餘額 {{.Amount}}"
+
+# menu

@@ -22,3 +22,7 @@ type Product struct {
 func (Product) TableName() string {
 	return "products"
 }
+
+func (model Product) Profit() decimal.Decimal {
+	return model.Price.Sub(model.Cost)
+}

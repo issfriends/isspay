@@ -43,7 +43,7 @@ type WebHooker interface {
 type ChatBot interface {
 	WebHooker
 	Use(wrappers ...HandleWrapper)
-	SetCommand(cmd Command, handle MsgHandle)
+	SetCommand(cmd Command, handle MsgHandle, wrappers ...HandleWrapper)
 	SetForm(form *MsgForm)
 	SetMenu(menu linebot.RichMenu, imagePath string) error
 	HandleMsg(msg *MsgContext) error
@@ -92,12 +92,18 @@ func (bot *lineBot) SetMenu(menu linebot.RichMenu, imagePath string) error {
 	return nil
 }
 
-func (bot *lineBot) SetCommand(cmd Command, handle MsgHandle) {
+func (bot *lineBot) SetCommand(cmd Command, handle MsgHandle, wrappers ...HandleWrapper) {
 	if len(bot.wrappers) > 0 {
 		for _, wrapper := range bot.wrappers {
 			handle = wrapper(handle)
 		}
 	}
+	if len(wrappers) > 0 {
+		for _, wrapper := range bot.wrappers {
+			handle = wrapper(handle)
+		}
+	}
+
 	bot.routes[cmd] = handle
 }
 

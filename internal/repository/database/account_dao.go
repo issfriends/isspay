@@ -25,11 +25,22 @@ func (d AccountDao) GetAccount(ctx context.Context, q *query.GetAccountQuery) er
 	data := &model.Account{}
 	db := d.GetDB(ctx)
 
-	err := db.Preload("Wallet").Scopes(scope.GetAccountScope(q)).First(data).Error
+	err := db.Scopes(scope.GetAccount(q)).First(data).Error
 	if err != nil {
 		return err
 	}
 
 	q.Data = data
+	return nil
+}
+
+func (d AccountDao) UpdateAccount(ctx context.Context, q *query.GetAccountQuery, updateAccount *model.Account) error {
+	db := d.GetDB(ctx)
+
+	err := db.Table(updateAccount.TableName()).Scopes(scope.GetAccount(q)).Updates(updateAccount).Error
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

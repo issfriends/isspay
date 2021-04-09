@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	"github.com/google/uuid"
@@ -10,10 +9,12 @@ import (
 	"github.com/issfriends/isspay/internal/app/query"
 	"github.com/issfriends/isspay/internal/pkg/crypto"
 	"github.com/issfriends/isspay/pkg/config"
+	"github.com/issfriends/isspay/pkg/goerr"
 )
 
 type AuthCacher interface {
 	CacheTokenWithMsgID(ctx context.Context, token *crypto.Token, msgID string) error
+	GetTokenByMsgID(ctx context.Context, msgID string) (*crypto.Token, error)
 }
 
 type AuthDatabaser interface {
@@ -25,6 +26,7 @@ type AuthDatabaser interface {
 
 type AuthServicer interface {
 	// Login(ctx context.Context)
+	GetTokenByMsgID(ctx context.Context, msgID string) (*crypto.Token, error)
 	SignUpByChatbot(ctx context.Context, account *model.Account) error
 	RefreshChatbotToken(ctx context.Context, messengerID string) (*crypto.Claims, error)
 }
@@ -45,7 +47,7 @@ func (svc authSvc) SignUpByChatbot(ctx context.Context, account *model.Account) 
 
 	svc.AuthDatabaser.ExecuteTx(ctx, func(txCtx context.Context) error {
 		getAccQ := &query.GetAccountQuery{
-			Email: string(account.Email),
+			Email: account.Email,
 		}
 		err := svc.AuthDatabaser.GetAccount(ctx, getAccQ)
 		if err != nil {
@@ -53,8 +55,8 @@ func (svc authSvc) SignUpByChatbot(ctx context.Context, account *model.Account) 
 		}
 
 		if getAccQ.Data != nil {
-			// duplicate error
-			return errors.New("duplicated")
+
+			return goerr.ErrResourceConflict
 		}
 
 		account.UID = uuid.New().String()
