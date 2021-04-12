@@ -6,9 +6,12 @@ import (
 	"fmt"
 
 	"github.com/issfriends/isspay/internal/app"
+	"github.com/issfriends/isspay/internal/delivery/bot"
 	"github.com/issfriends/isspay/internal/delivery/restful"
+	"github.com/issfriends/isspay/internal/repository/cache"
 	"github.com/issfriends/isspay/internal/repository/database"
 	"github.com/issfriends/isspay/pkg/chatbot"
+	"github.com/issfriends/isspay/pkg/config"
 	"github.com/issfriends/isspay/pkg/i18n"
 	"github.com/labstack/echo/v4"
 	"github.com/vx416/gox/container"
@@ -35,6 +38,7 @@ type TestInstance struct {
 	Ctx      context.Context
 	DB       dbprovider.GormProvider
 	Database *database.Database
+	Cache    *cache.Cache
 	Svc      *app.App
 	Serv     *echo.Echo
 	Bot      chatbot.ChatBot
@@ -46,10 +50,12 @@ func (ti *TestInstance) ProvideDB() fx.Option {
 	return fx.Options(
 		fx.Provide(
 			ti.buildGorm,
+			ti.buildRedis,
 			database.New,
+			cache.New,
 		),
 		fx.Invoke(ti.setupMigration, ti.setupFactory, ti.setupLog, i18n.Initi18n),
-		fx.Populate(&ti.DB, &ti.Database),
+		fx.Populate(&ti.DB, &ti.Database, &ti.Cache),
 	)
 }
 
@@ -85,23 +91,27 @@ func (ti *TestInstance) ProvideBotHandler() fx.Option {
 		ti.ProvideSvc(),
 		fx.Provide(
 			chatbot.TestBot,
-			// bot.New,
+			bot.New,
 		),
-		// fx.Invoke(func(h *bot.Handler, chatbot chatbot.ChatBot) {
-		// 	h.Routes(chatbot)
-		// }),
+		fx.Invoke(func(h *bot.Handler, chatbot chatbot.ChatBot) {
+			h.Routes(chatbot)
+		}),
 		fx.Populate(&ti.Bot),
 	)
 }
 
 // Start start test application
 func (ti *TestInstance) Start(option fx.Option) error {
+	_, err := config.Init()
+	if err != nil {
+		return err
+	}
 	app := fx.New(
 		option,
 		fx.NopLogger,
 	)
 
-	err := app.Start(ti.Ctx)
+	err = app.Start(ti.Ctx)
 	if err != nil {
 		return err
 	}

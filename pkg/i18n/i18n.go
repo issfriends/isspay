@@ -11,17 +11,19 @@ import (
 )
 
 var (
-	bundle = i18n.NewBundle(language.English)
+	bundle = i18n.NewBundle(language.Chinese)
 	once   sync.Once
 )
 
-func Initi18n() {
+func Initi18n() error {
+	var err error
 	once.Do(func() {
 		_, f, _, _ := runtime.Caller(0)
 		dir := filepath.Dir(f)
 		bundle.RegisterUnmarshalFunc("yaml", yaml.Unmarshal)
-		bundle.LoadMessageFile(filepath.Join(dir, "../../assets/i18n/zh-TW.yaml"))
+		_, err = bundle.LoadMessageFile(filepath.Join(dir, "../../assets/i18n/zh-TW.yaml"))
 	})
+	return err
 }
 
 func ZhTW(msgID string, data ...interface{}) (string, error) {

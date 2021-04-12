@@ -17,7 +17,7 @@ type AccountCache struct {
 }
 
 func (cache AccountCache) CacheTokenWithMsgID(ctx context.Context, token *crypto.Token, msgID string) error {
-	err := cache.Client.Set(ctx, tokenKey+":"+msgID, token.AccessToken, time.Duration(token.ExpiredAt)).Err()
+	err := cache.Client.Set(ctx, tokenKey+":"+msgID, token.AccessToken, 7*24*time.Hour).Err()
 	if err != nil {
 		return err
 	}

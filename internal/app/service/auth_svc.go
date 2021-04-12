@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/google/uuid"
@@ -10,6 +11,8 @@ import (
 	"github.com/issfriends/isspay/internal/pkg/crypto"
 	"github.com/issfriends/isspay/pkg/config"
 	"github.com/issfriends/isspay/pkg/goerr"
+	"github.com/shopspring/decimal"
+	"gorm.io/gorm"
 )
 
 type AuthCacher interface {
@@ -50,7 +53,7 @@ func (svc authSvc) SignUpByChatbot(ctx context.Context, account *model.Account) 
 			Email: account.Email,
 		}
 		err := svc.AuthDatabaser.GetAccount(ctx, getAccQ)
-		if err != nil {
+		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 			return err
 		}
 
@@ -60,6 +63,10 @@ func (svc authSvc) SignUpByChatbot(ctx context.Context, account *model.Account) 
 		}
 
 		account.UID = uuid.New().String()
+		account.Wallet = &model.Wallet{
+			UID:    uuid.New().String(),
+			Amount: decimal.Zero,
+		}
 
 		err = svc.AuthDatabaser.CreateAccount(ctx, account)
 		if err != nil {

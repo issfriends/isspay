@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/Pallinder/go-randomdata"
+	"github.com/line/line-bot-sdk-go/linebot"
 )
 
 func TestBot() ChatBot {
@@ -13,9 +14,18 @@ func TestBot() ChatBot {
 		activeForms:    &Forms{},
 		errHandle:      DefaultErrorHandle,
 		notFoundHandle: DefaultNotFoundHandle,
+		LineBotClient:  &LineBotClient{},
 	}
 
-	return bot
+	return &mockLineBot{lineBot: bot}
+}
+
+type mockLineBot struct {
+	*lineBot
+}
+
+func (mock mockLineBot) SetMenu(menu linebot.RichMenu, imagePath string) error {
+	return nil
 }
 
 func TestMsgCtx(cmd Command, data map[string]string) *MsgContext {

@@ -51,7 +51,7 @@ func (ti *TestInstance) buildRedis() (*cache.RedisClient, error) {
 
 	redisCfg := cache.RedisCfg{
 		Host:       "localhost",
-		Port:       "16379",
+		Port:       "55000",
 		DB:         0,
 		LockPrefix: "test",
 		LockTTLSec: 10,

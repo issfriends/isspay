@@ -9,9 +9,9 @@ var (
 	_ service.AuthCacher = (*Cache)(nil)
 )
 
-func New(redis cache.RedisClient) *Cache {
+func New(redis *cache.RedisClient) *Cache {
 	return &Cache{
-		AccountCache: &AccountCache{RedisClient: &redis},
+		AccountCache: &AccountCache{RedisClient: redis},
 	}
 }
 
