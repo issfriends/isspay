@@ -1,6 +1,8 @@
 package bot
 
 import (
+	"errors"
+
 	"github.com/issfriends/isspay/internal/app"
 	"github.com/issfriends/isspay/internal/app/model"
 	"github.com/issfriends/isspay/internal/app/query"
@@ -70,12 +72,21 @@ func (h AccountHandler) PaymentEndpoint(c *chatbot.MsgContext) error {
 	var (
 		ctx = c.Ctx
 	)
-	amount, err := decimal.NewFromString(c.GetValue("amount"))
+
+	claims, err := GetClaims(c)
 	if err != nil {
 		return err
 	}
 
-	balance, err := h.Account.MakePayment(ctx, 0, amount)
+	amount, err := decimal.NewFromString(c.GetValue("amount"))
+	if err != nil {
+		return err
+	}
+	if amount.IsNegative() {
+		return errors.New("wrong")
+	}
+
+	balance, err := h.Account.MakePayment(ctx, claims.WalletID, amount)
 	if err != nil {
 		return err
 	}

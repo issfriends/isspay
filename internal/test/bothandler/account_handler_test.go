@@ -65,3 +65,45 @@ func (s *AccountSuite) TestSignUp() {
 		})
 	}
 }
+
+func (s *AccountSuite) TestPayment() {
+	tcs := []struct {
+		name   string
+		happy  bool
+		amount string
+		gen    func() *model.Account
+	}{
+		{
+			"unregister_msgID", false, "100",
+			func() *model.Account {
+				a := factory.Account.MustBuild().(*model.Account)
+				return a
+			},
+		},
+		{
+			"happy_case", true, "100",
+			func() *model.Account {
+				a := factory.Account.MustBuild().(*model.Account)
+				s.signUp(a)
+				return a
+			},
+		},
+	}
+
+	for _, tc := range tcs {
+		s.Run(tc.name, func() {
+			msg := chatbot.TestMsgCtx(view.PaymentCmd, map[string]string{
+				"amount": tc.amount,
+			})
+			acc := tc.gen()
+			chatbot.SetTestMsgID(msg, acc.MessengerID.String)
+			err := s.Bot.HandleMsg(msg)
+			if tc.happy {
+				s.NoError(err)
+			} else {
+				s.Error(err)
+				s.T().Logf("ERR:%s", err.Error())
+			}
+		})
+	}
+}

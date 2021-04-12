@@ -97,3 +97,8 @@ func (c *MockClient) GetUserProfile(msgID string) (*UserProfile, error) {
 	}
 	return profile, nil
 }
+
+func SetTestMsgID(ctx *MsgContext, msgID string) {
+	ctx.testMsgID = msgID
+	ctx.store(MessagenerIDKey, msgID)
+}

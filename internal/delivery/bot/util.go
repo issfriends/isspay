@@ -2,6 +2,7 @@ package bot
 
 import (
 	"context"
+	"errors"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/issfriends/isspay/internal/pkg/crypto"
@@ -13,7 +14,7 @@ import (
 func GetClaims(c *chatbot.MsgContext) (*crypto.Claims, error) {
 	claims, ok := c.Ctx.Value(ClaimsKey{}).(*crypto.Claims)
 	if !ok {
-		return nil, nil
+		return nil, errors.New("unauth")
 	}
 	return claims, nil
 }

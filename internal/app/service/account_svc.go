@@ -35,6 +35,7 @@ type accountSvc struct {
 }
 
 func (svc accountSvc) MakePayment(ctx context.Context, walletID uint64, amount decimal.Decimal) (decimal.Decimal, error) {
+
 	balance, err := svc.UpdateWalletAmount(ctx, walletID, amount, true)
 	if err != nil {
 		return decimal.Decimal{}, err

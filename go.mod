@@ -7,6 +7,7 @@ require (
 	github.com/Microsoft/go-winio v0.4.16 // indirect
 	github.com/Pallinder/go-randomdata v1.2.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/google/uuid v1.1.2
 	github.com/gotestyourself/gotestyourself v2.2.0+incompatible // indirect

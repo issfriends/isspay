@@ -91,6 +91,8 @@ type MsgContext struct {
 	*FormData
 	Ctx    context.Context
 	client BotClient
+
+	testMsgID string
 }
 
 func (c *MsgContext) ReplyMsg(msgs ...Message) error {
@@ -130,6 +132,10 @@ func (c *MsgContext) ReplyTextf(f string, args ...interface{}) error {
 }
 
 func (c *MsgContext) GetCurrentUser() (*UserProfile, error) {
+	if c.testMsgID != "" {
+		return &UserProfile{MessengerID: c.testMsgID}, nil
+	}
+
 	mID := c.GetMessengerID()
 	return c.client.GetUserProfile(mID)
 }

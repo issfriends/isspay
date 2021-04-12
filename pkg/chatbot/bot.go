@@ -98,8 +98,9 @@ func (bot *lineBot) SetCommand(cmd Command, handle MsgHandle, wrappers ...Handle
 			handle = wrapper(handle)
 		}
 	}
+
 	if len(wrappers) > 0 {
-		for _, wrapper := range bot.wrappers {
+		for _, wrapper := range wrappers {
 			handle = wrapper(handle)
 		}
 	}
