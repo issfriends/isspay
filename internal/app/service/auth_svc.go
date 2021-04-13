@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/issfriends/isspay/internal/app/model"
+	"github.com/issfriends/isspay/internal/app/model/value"
 	"github.com/issfriends/isspay/internal/app/query"
 	"github.com/issfriends/isspay/internal/pkg/crypto"
 	"github.com/issfriends/isspay/pkg/config"
@@ -47,7 +48,6 @@ type authSvc struct {
 }
 
 func (svc authSvc) SignUpByChatbot(ctx context.Context, account *model.Account) error {
-
 	svc.AuthDatabaser.ExecuteTx(ctx, func(txCtx context.Context) error {
 		getAccQ := &query.GetAccountQuery{
 			Email: account.Email,
@@ -66,6 +66,12 @@ func (svc authSvc) SignUpByChatbot(ctx context.Context, account *model.Account) 
 		account.Wallet = &model.Wallet{
 			UID:    uuid.New().String(),
 			Amount: decimal.Zero,
+		}
+		if account.Role == value.Interviewee {
+			err := account.Wallet.Amount.Scan(config.Get().App.IntervieweeAmount)
+			if err != nil {
+				return err
+			}
 		}
 
 		err = svc.AuthDatabaser.CreateAccount(ctx, account)

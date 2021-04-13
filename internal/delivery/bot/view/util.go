@@ -27,7 +27,7 @@ var DefaultMenu = linebot.RichMenu{
 	Name:        "menu",
 	ChatBarText: "menu",
 	Areas: []linebot.AreaDetail{
-		linebot.AreaDetail{
+		{
 			Bounds: linebot.RichMenuBounds{
 				X: 0, Y: 17, Width: 830, Height: 830,
 			},
@@ -35,7 +35,7 @@ var DefaultMenu = linebot.RichMenu{
 				Type: linebot.RichMenuActionTypePostback,
 				Data: MenuCmd.With("menu=wallet"),
 			}},
-		linebot.AreaDetail{
+		{
 			Bounds: linebot.RichMenuBounds{
 				X: 840, Y: 12, Width: 830, Height: 830,
 			},
@@ -44,13 +44,13 @@ var DefaultMenu = linebot.RichMenu{
 				Data: MenuCmd.With("menu=shop"),
 			},
 		},
-		linebot.AreaDetail{
+		{
 			Bounds: linebot.RichMenuBounds{
 				X: 1670, Y: 8, Width: 830, Height: 830,
 			},
 			Action: linebot.RichMenuAction{
 				Type: linebot.RichMenuActionTypePostback,
-				Data: MenuCmd.With("menu=function"),
+				Data: MenuCmd.With("menu=others"),
 			}},
 	},
 }

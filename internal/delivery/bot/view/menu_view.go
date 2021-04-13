@@ -27,16 +27,15 @@ func accountOptions() []*linebot.QuickReplyButton {
 	}
 }
 
-func FunctionMenuView(title string, replies ...*linebot.QuickReplyButton) linebot.SendingMessage {
-	replies = append(replies, functionOptions()...)
+func OthersMenuView(title string, replies ...*linebot.QuickReplyButton) linebot.SendingMessage {
+	replies = append(replies, othersOptions()...)
 	return QuickRepliesView(title, replies...)
 }
 
-func functionOptions() []*linebot.QuickReplyButton {
+func othersOptions() []*linebot.QuickReplyButton {
 	return []*linebot.QuickReplyButton{
 		linebot.NewQuickReplyButton("", NewPBAction("註冊", SignUpCmd.String())),
 		linebot.NewQuickReplyButton("", NewPBAction("切換會員", MenuCmd.With("menu=switchMember"))),
-		linebot.NewQuickReplyButton("", NewPBAction("我是面試生", SignUpCmd.With("interviewee=yes"))),
 	}
 }
 
@@ -47,7 +46,8 @@ func SwitchMemberMenuView(title string, replies ...*linebot.QuickReplyButton) li
 
 func memberOptions() []*linebot.QuickReplyButton {
 	return []*linebot.QuickReplyButton{
-		linebot.NewQuickReplyButton("", NewPBAction("校友", SwitchMemberCmd.With("membership=校友"))),
+		linebot.NewQuickReplyButton("", NewPBAction("碩士", SwitchMemberCmd.With("membership=master"))),
+		linebot.NewQuickReplyButton("", NewPBAction("校友", SwitchMemberCmd.With("membership=alumni"))),
 		linebot.NewQuickReplyButton("", NewPBAction("phd", SwitchMemberCmd.With("membership=phd"))),
 	}
 }

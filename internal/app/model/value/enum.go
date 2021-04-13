@@ -48,6 +48,7 @@ const (
 	Faculty
 	Professor
 	Alumni
+	Interviewee
 )
 
 type OrderStatus int8

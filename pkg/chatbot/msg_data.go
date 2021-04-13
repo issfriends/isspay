@@ -1,11 +1,24 @@
 package chatbot
 
+import "strings"
+
 type FormData struct {
 	data map[string]string
 }
 
 func (f *FormData) GetValue(key string) string {
 	return f.data[key]
+}
+
+func (f *FormData) GetValueBool(key string) bool {
+	val := f.data[key]
+	val = strings.ToLower(val)
+
+	switch val {
+	case "1", "yes", "y":
+		return true
+	}
+	return false
 }
 
 func (f *FormData) Text() string {

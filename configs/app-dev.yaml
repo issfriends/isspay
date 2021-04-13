@@ -1,6 +1,7 @@
 app:
   name: isspay
   env: dev
+  interviewee_amount: 50
 db:
   host: localhost
   port: 5432

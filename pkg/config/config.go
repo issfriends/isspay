@@ -93,8 +93,9 @@ type Config struct {
 	fx.Out
 
 	App struct {
-		Name string `yaml:"name"`
-		Env  Env    `yaml:"env"`
+		Name              string `yaml:"name"`
+		Env               Env    `yaml:"env"`
+		IntervieweeAmount int64  `yaml:"interviewee_amount"`
 	} `yaml:"app"`
 
 	DB    *dbprovider.DBConfig `yaml:"db"`

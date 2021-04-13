@@ -21,10 +21,10 @@ func (h MenuHandler) MenuEndpoint(c *chatbot.MsgContext) error {
 		msg = view.SwitchMemberMenuView("switch member")
 	case "shop":
 		msg = view.ShopMenuView("isspay shop")
-	case "function":
-		msg = view.FunctionMenuView("isspay 功能")
 	case "wallet":
 		msg = view.AccountMenuView("isspay account")
+	case "others":
+		msg = view.OthersMenuView("isspay 功能")
 	default:
 		msg = chatbot.TextMsgf("menu %s not found", c.GetValue("menu"))
 	}
